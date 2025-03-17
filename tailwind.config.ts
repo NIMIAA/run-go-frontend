@@ -9,8 +9,16 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        'background': "#fff",
+        'foreground': "#006",
+        'primary-text': "#000",
+        'hover-blue': "#023e8a",
+        'grey-bg': "#f8f9fa",
+        'hover-gold': "#cc9933",
+      },
+      fontFamily: {
+        sans: ["var(--font-geist-sans)", "sans-serif"],
+        mono: ["var(--font-geist-mono)", "monospace"],
       },
     },
   },
