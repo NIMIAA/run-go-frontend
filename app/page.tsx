@@ -1,3 +1,4 @@
+
 import Image from "next/image";
 import Navbar from "./nav/page";
 import homepageImage from "../public/images/homepage-img.png";
@@ -34,6 +35,7 @@ export default function Home() {
         
       </main>
       <Footer/>
+
     </div>
   );
 }
