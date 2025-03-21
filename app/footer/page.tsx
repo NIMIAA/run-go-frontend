@@ -1,8 +1,14 @@
+import Link from "next/link";
+import Image from "next/image";
 export default function Footer() {
     return (
-       <div className="bg-foreground text-background h- p-16">
-            <p className="my-8 font-bold text-xl">RUNGo</p>
-       <div className="grid grid-cols-4 gap-8 mb-16">
+       <div className="bg-foreground text-background p-16">
+            <div className="">
+          <Link href="/">
+          <Image src="/images/Logo.png" alt="logo" width={150} height={10}/>
+          </Link>
+        </div>
+       <div className="md:grid grid-cols-4 gap-8 mb-16">
        <div className="py-8">
         <a href="#"><p className="py-2 font-semibold text-lg">Company</p></a>
         <a href="#"><p className="py-2 hover:text-hover-gold">About Us</p></a>
@@ -28,9 +34,9 @@ export default function Footer() {
         <a href="#"><p className="py-2 hover:text-hover-gold">Instagram</p></a>
        </div>
        </div>
-       <div className="my-8 grid grid-cols-4 justify-between items-center mt-8">
+       <div className="my-8 md:grid grid-cols-4 justify-between items-center mt-8">
          <p className="col-span-3">© 2025 RUNGo. All rights reserved</p>
-         <p className="">Terms and Conditions</p>
+         <p className="hidden md:block">Terms and Conditions</p>
 
        </div>
        </div>
