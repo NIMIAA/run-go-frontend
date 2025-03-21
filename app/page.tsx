@@ -1,7 +1,8 @@
+
+import Image from "next/image";
 import Navbar from "./nav/page";
 import Link from "next/link";
 import { MapPinned, Car, Smile } from "lucide-react";
-import Image from "next/image";
 import Footer from "./footer/page";
 
 export default function Home() {
@@ -29,9 +30,13 @@ export default function Home() {
 
           </div>
         </div>
+        
+    
+      <Footer/>
+
     </div>
     </div>
-    </div>
+    
     <div className="py-16">
       <p className="text-center font-medium text-3xl py-4 underline decoration-4 decoration-hover-gold">How it works</p>
       <div className="md:flex justify-center gap-4 p-8 text-center">
@@ -98,6 +103,7 @@ export default function Home() {
     </div>
 
     <Footer/>
+  </div>
   </div>
   );
 }
