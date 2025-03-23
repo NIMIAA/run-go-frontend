@@ -1,11 +1,16 @@
 import type { Config } from "tailwindcss";
 import colors from "tailwindcss/colors";
+import daisyui from "daisyui";
+import tailwindTypography from "@tailwindcss/typography";
 export default {
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  daisyui: {
+    themes: [],
+  },
   theme: {
     container: {
       padding: {
@@ -35,5 +40,5 @@ export default {
       // },
     },
   },
-  plugins: [],
+  plugins: [daisyui, tailwindTypography],
 } satisfies Config;
