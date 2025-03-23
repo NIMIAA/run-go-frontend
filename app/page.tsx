@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Navbar from "./components/nav/page";
+import Navbar from "./components/nav";
 import Link from "next/link";
 import { MapPinned, Car, Smile } from "lucide-react";
 import Footer from "./footer/page";
@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <>
       <header className="bg-black/50 bg-blend-multiply bg-cover bg-[url(/images/background/bg-3.jpg)] bg-bottom text-white h-screen">
-        <nav className="bg-forground min-h-20 text-black">
+        <nav className="bg-forground min-h-10 text-black bg-black/10 bg-blend-multiply">
           <Navbar/>
         </nav>
         <div className="mx-auto max-w-2xl py-20 sm:py-48 lg:py-56  items-center   text-white ">
