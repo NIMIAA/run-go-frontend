@@ -1,13 +1,13 @@
 import Image from "next/image";
 import Navbar from "./components/nav";
-import { MapPinned, Car, Smile } from "lucide-react";
 import Footer from "./components/app/footer";
 import { MapPinIcon, UsersIcon, FaceSmileIcon} from "@heroicons/react/24/outline";
 
 export default function Home() {
+  
   return (
     <>
-      <header className="bg-black/50 bg-blend-multiply bg-cover bg-[url(/images/background/bg-3.jpg)] bg-bottom text-white h-screen">
+      <header className="bg-black/50 bg-blend-multiply bg-cover bg-[url(/images/background/bg-3.jpg)] bg-bottom text-white h-[85vh] md:h-screen">
         <nav className="bg-forground min-h-10 text-black bg-black/5 bg-blend-multiply">
           <Navbar />
         </nav>
@@ -38,10 +38,10 @@ export default function Home() {
         </div>
       </header>
 
-      <main>
-        <div className="mx-auto max-w-7xl px-6 py-32 lg:px-8 ">
+      <main className="md:px-16">
+        <div className="mx-auto max-w-7xl px-6 py-32 lg:px-8 bg-blend-multiply bg-no-repeat bg-cover bg-white bg-opacity-75 bg-center">
           <div className="mx-auto max-w-2xl lg:text-center">
-            <p className="mt-2 text-4xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-5xl lg:text-balance mb-4">
+            <p className="mt-2 text-4xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-5xl lg:text-balance mb-4 text-center">
               How it works?
             </p>
           </div>
@@ -78,7 +78,7 @@ export default function Home() {
               <div className="flex justify-center items-center">
                 <div className="flex flex-col justify-center items-center gap-y-4">
                   <div className="bg-lightBlue-500 size-20 p-6 rounded  text-center shadow-xl text-white shadow-lightBlue-500/30">
-                    <FaceSmileIcon/>
+                    <FaceSmileIcon />
                   </div>
                   <p className="mt-2 text-2xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-3xl lg:text-balance">
                     Enjoy your ride
@@ -92,10 +92,13 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="py-16">
-          <p className="text-center font-medium text-3xl py-4 underline decoration-4 decoration-hover-gold">
-            Why choose us
-          </p>
+        <div className="py-16 ">
+          <div className="mx-auto max-w-2xl lg:text-center">
+            <p className="mt-2 text-4xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-5xl lg:text-balance mb-4 text-center">
+              Why choose us
+            </p>
+          </div>
+
           <div className="md:grid grid-rows-2 grid-flow-col gap-8 p-8 text-left">
             <div className="md:flex justify-center items-center gap-4 mb-4">
               <Image
@@ -106,8 +109,10 @@ export default function Home() {
                 className="rounded-xl"
               />
               <div className="my-2">
-                <p className="text-lg font-semibold">Fast and reliable</p>
-                <p className="text-md">
+                <p className="mt-2 text-2xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-3xl lg:text-balance">
+                  Fast and reliable
+                </p>
+                <p className="text-md leading-1 mt-2">
                   Easily book a ride with just a few taps. No more waiting—get a
                   ride within minutes, right from your campus.
                 </p>
