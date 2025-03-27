@@ -1,11 +1,16 @@
 import type { Config } from "tailwindcss";
 import colors from "tailwindcss/colors";
+import daisyui from "daisyui";
+import tailwindTypography from "@tailwindcss/typography";
 export default {
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  daisyui: {
+    themes: [],
+  },
   theme: {
     container: {
       padding: {
@@ -18,23 +23,22 @@ export default {
     },
     extend: {
       colors: {
-
-        'background': "#fff",
-        'foreground': "#006",
-        'primary-text': "#000",
-        'hover-blue': "#023e8a",
-        'grey-bg': "#f8f9fa",
-        'hover-gold': "#cc9933",
+        ...colors,
+        background: "#fff",
+        foreground: "#006",
+        "primary-text": "#000",
+        "hover-blue": "#023e8a",
+        "grey-bg": "#f8f9fa",
+        "hover-gold": "#cc9933",
       },
       fontFamily: {
         sans: ["var(--font-geist-sans)", "sans-serif"],
         mono: ["var(--font-geist-mono)", "monospace"],
-
       },
-      backgroundImage: {
-        'backgroundImg': "url('/images/background-image.jpg')",
-      },
+      // backgroundImage: {
+      //   'backgroundImg': "url('/images/background-image.jpg')",
+      // },
     },
   },
-  plugins: [],
+  plugins: [daisyui, tailwindTypography],
 } satisfies Config;

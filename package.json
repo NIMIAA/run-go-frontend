@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@heroicons/react": "^2.2.0",
     "@next/font": "^14.2.15",
     "antd": "^5.23.1",
     "lucide-react": "^0.483.0",
@@ -18,9 +19,11 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@tailwindcss/typography": "^0.5.16",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "daisyui": "^5.0.9",
     "eslint": "^9",
     "eslint-config-next": "15.1.5",
     "postcss": "^8",
