@@ -2,8 +2,8 @@ import Link from "next/link";
 export default function Login() {
     return (
       <div className="md:flex">
-        <div className=" w-1/2 bg-[url(/images/background/bg-4.jpg)] bg-cover bg-center bg-no-repeat bg-opacity-25">
-          <div className="md:bg-black/50 bg-blend-multiply w-1/2 absolute inset-0"></div>
+        <div className=" w-1/2">
+          <div className="md:bg-black/50 bg-blend-multiply md:bg-[url(/images/background/bg-4.jpg)] w-1/2  bg-cover bg-center bg-no-repeat bg-opacity-25 absolute inset-0"></div>
         </div>
         <div className="h-screen flex justify-center items-center">
           <div className="text-center">
@@ -27,7 +27,7 @@ export default function Login() {
             </button>
             <div className="my-4">
               <p>
-                Have an account?{" "}
+                Don't have an account?{" "}
                 <Link className="text-foreground" href="signup">
                   Sign Up
                 </Link>

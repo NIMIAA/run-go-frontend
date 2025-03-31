@@ -3,7 +3,7 @@ export default function SignupPage() {
     return (
       <div className="md:flex">
         <div className=" w-1/2 ">
-          <div className="md:bg-black/30 w-1/2 bg-[url(/images/users-sign-up.jpg)] bg-cover bg-center bg-no-repeat bg-opacity-25 absolute inset-0"></div>
+          <div className="md:bg-black/30 w-1/2 md:bg-[url(/images/users-sign-up.jpg)] bg-cover bg-center bg-no-repeat bg-opacity-25 absolute inset-0"></div>
         </div>
 
         <div className="h-screen flex justify-center items-center">
@@ -39,9 +39,6 @@ export default function SignupPage() {
             </div>
           </div>
         </div>
-        {/* <Link href='/'>go back home
-            </Link>
-         */}
       </div>
     );
 }

@@ -127,7 +127,7 @@ export default function Home() {
                 className="rounded-xl"
               />
               <div className="my-2">
-                <p className="text-lg font-semibold">Affordable Rides</p>
+                <p className="mt-2 text-2xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-3xl lg:text-balance">Affordable Rides</p>
                 <p className="text-md">
                   Student-friendly pricing with no hidden charges. Enjoy
                   cost-effective rides across campus.
@@ -143,7 +143,7 @@ export default function Home() {
                 className="rounded-xl"
               />
               <div className="my-2">
-                <p className="text-lg font-semibold">Safe & Secure</p>
+                <p className="mt-2 text-2xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-3xl lg:text-balance">Safe & Secure</p>
                 <p className="text-md">
                   All drivers are verified and trained to ensure a safe ride.
                   Real-time tracking and emergency support provide extra
@@ -160,7 +160,7 @@ export default function Home() {
                 className="rounded-xl"
               />
               <div className="my-2">
-                <p className="text-lg font-semibold">Campus-Wide Coverage</p>
+                <p className="mt-2 text-2xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-3xl lg:text-balance">Campus-Wide Coverage</p>
                 <p className="text-md">
                   Rides available at all key locations, including hostels,
                   lecture halls, and libraries. Never worry about getting around

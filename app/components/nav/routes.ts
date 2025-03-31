@@ -1,18 +1,18 @@
 export const routes = [
   {
     label: "ride",
-    path: "",
+    path: "login",
   },
   {
     label: "Drive",
-    path: "",
+    path: "login",
   },
   {
     label: "about",
-    path: "",
+    path: "/",
   },
   {
     label: "contact",
-    path: "",
+    path: "/",
   },
 ];
