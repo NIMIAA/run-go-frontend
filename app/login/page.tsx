@@ -27,7 +27,7 @@ export default function Login() {
             </button>
             <div className="my-4">
               <p>
-                Don't have an account?{" "}
+                Don&apos;t have an account?{" "}
                 <Link className="text-foreground" href="signup">
                   Sign Up
                 </Link>
