@@ -35,9 +35,7 @@ export default {
         sans: ["var(--font-geist-sans)", "sans-serif"],
         mono: ["var(--font-geist-mono)", "monospace"],
       },
-      // backgroundImage: {
-      //   'backgroundImg': "url('/images/background-image.jpg')",
-      // },
+      
     },
   },
   plugins: [daisyui, tailwindTypography],

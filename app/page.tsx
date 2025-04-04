@@ -17,7 +17,7 @@ export default function Home() {
               Fast, Safe and Reliable Rides on Campus.
             </h1>
             <p className="mt-8 text-lg e font-medium text-prettysm:text-xl/8">
-              Book a ride in seconds and get to your destination without tbe
+              Book a ride in seconds and get to your destination without the
               hassle
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
@@ -31,7 +31,7 @@ export default function Home() {
                 href="#"
                 className="text-sm/6 font-semibold text-white rounded  px-6 border-white border py-3 "
               >
-                Become a driver<span aria-hidden="true">→</span>
+                Become a driver <span aria-hidden="true">→</span>
               </a>
             </div>
           </div>
@@ -39,15 +39,16 @@ export default function Home() {
       </header>
 
       <main className="md:px-16">
-        <div className="mx-auto max-w-7xl px-6 py-32 lg:px-8 bg-blend-multiply bg-no-repeat bg-cover bg-white bg-opacity-75 bg-center">
+        <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8 bg-blend-multiply bg-no-repeat bg-cover bg-white bg-opacity-75 bg-center">
           <div className="mx-auto max-w-2xl lg:text-center">
             <p className="mt-2 text-4xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-5xl lg:text-balance mb-4 text-center">
               How it works?
             </p>
           </div>
           <div className="md:flex justify-center gap-4 p-8 text-center">
+          <div className="md:flex justify-center gap-4 p-8 text-center">
             <div className="flex justify-center items-center">
-              <div className="flex flex-col justify-center items-center gap-y-4">
+              <div className="flex flex-col justify-center items-center gap-y-4 md:gap-y-2">
                 <div className="bg-yellow-500 size-20 p-6 rounded  text-center shadow-xl text-white shadow-yellow-500/30">
                   <MapPinIcon />
                 </div>
@@ -59,9 +60,10 @@ export default function Home() {
                 </p>
               </div>
             </div>
+          </div>
             <div className="md:flex justify-center gap-4 p-8 text-center">
               <div className="flex justify-center items-center">
-                <div className="flex flex-col justify-center items-center gap-y-4">
+                <div className="flex flex-col justify-center items-center gap-y-4 md:gap-y-2">
                   <div className="bg-violet-500 size-20 p-6 rounded  text-center shadow-xl text-white shadow-violet-500/30">
                     <UsersIcon />
                   </div>
@@ -76,7 +78,7 @@ export default function Home() {
             </div>
             <div className="md:flex justify-center gap-4 p-8 text-center">
               <div className="flex justify-center items-center">
-                <div className="flex flex-col justify-center items-center gap-y-4">
+                <div className="flex flex-col justify-center items-center gap-y-4 md:gap-y-2">
                   <div className="bg-lightBlue-500 size-20 p-6 rounded  text-center shadow-xl text-white shadow-lightBlue-500/30">
                     <FaceSmileIcon />
                   </div>
@@ -90,17 +92,19 @@ export default function Home() {
               </div>
             </div>
           </div>
+          
         </div>
+      
 
-        <div className="py-16 ">
+        <div className="mx-auto max-w-7xl px-6 py-8 lg:px-8 bg-blend-multiply bg-no-repeat bg-cover bg-white bg-opacity-75 bg-center ">
           <div className="mx-auto max-w-2xl lg:text-center">
             <p className="mt-2 text-4xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-5xl lg:text-balance mb-4 text-center">
               Why choose us
             </p>
           </div>
 
-          <div className="md:grid grid-rows-2 grid-flow-col gap-8 p-8 text-left">
-            <div className="md:flex justify-center items-center gap-4 mb-4">
+          <div className="md:grid grid-rows-2 grid-flow-col justify-center gap-8 p-8">
+            <div className="md:flex justify-center items-center gap-4 mb-8">
               <Image
                 src="/images/reliable.jpg"
                 alt="Reliable"
@@ -109,16 +113,14 @@ export default function Home() {
                 className="rounded-xl"
               />
               <div className="my-2">
-                <p className="mt-2 text-2xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-3xl lg:text-balance">
-                  Fast and reliable
-                </p>
-                <p className="text-md leading-1 mt-2">
-                  Easily book a ride with just a few taps. No more waiting—get a
-                  ride within minutes, right from your campus.
+                <p className="mt-2 text-2xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-3xl lg:text-balance">Fast and reliable</p>
+                <p className="text-md leading-1 mt-2 text-justify">
+                Easily book a ride with just a few taps. No more waiting—get a
+                ride within minutes, right from your campus.
                 </p>
               </div>
             </div>
-            <div className="md:flex justify-center items-center gap-4 mb-4">
+            <div className="md:flex justify-center items-center gap-4 mb-8">
               <Image
                 src="/images/affordable.jpg"
                 alt="Reliable"
@@ -128,13 +130,13 @@ export default function Home() {
               />
               <div className="my-2">
                 <p className="mt-2 text-2xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-3xl lg:text-balance">Affordable Rides</p>
-                <p className="text-md">
+                <p className="text-md leading-1 mt-2 text-justify">
                   Student-friendly pricing with no hidden charges. Enjoy
                   cost-effective rides across campus.
                 </p>
               </div>
             </div>
-            <div className="md:flex justify-center items-center gap-4 mb-4 mb-4">
+            <div className="md:flex justify-center items-center gap-4 mb-8">
               <Image
                 src="/images/secure.jpg"
                 alt="Reliable"
@@ -144,14 +146,14 @@ export default function Home() {
               />
               <div className="my-2">
                 <p className="mt-2 text-2xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-3xl lg:text-balance">Safe & Secure</p>
-                <p className="text-md">
+                <p className="text-md leading-1 mt-2 text-justify">
                   All drivers are verified and trained to ensure a safe ride.
                   Real-time tracking and emergency support provide extra
                   security.
                 </p>
               </div>
             </div>
-            <div className="md:flex justify-center items-center gap-4 mb-4">
+            <div className="md:flex justify-center items-center gap-4 mb-8">
               <Image
                 src="/images/wide.jpg"
                 alt="Reliable"
@@ -161,7 +163,7 @@ export default function Home() {
               />
               <div className="my-2">
                 <p className="mt-2 text-2xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-3xl lg:text-balance">Campus-Wide Coverage</p>
-                <p className="text-md">
+                <p className="text-md leading-1 mt-2 text-justify">
                   Rides available at all key locations, including hostels,
                   lecture halls, and libraries. Never worry about getting around
                   campus again!

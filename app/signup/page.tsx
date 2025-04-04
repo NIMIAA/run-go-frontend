@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowLeftCircleIcon } from "@heroicons/react/24/outline";
 export default function SignupPage() {
     return (
       <div className="md:flex">
@@ -6,38 +7,52 @@ export default function SignupPage() {
           <div className="md:bg-black/30 w-1/2 md:bg-[url(/images/users-sign-up.jpg)] bg-cover bg-center bg-no-repeat bg-opacity-25 absolute inset-0"></div>
         </div>
 
-        <div className="h-screen flex justify-center items-center">
+        <div className="h-screen flex justify-center items-center  mx-6 md:w-1/2">
+        <Link href="/">
+        <ArrowLeftCircleIcon className="absolute top-4 left-4 size-12 md:text-white/50 cursor-pointer" />
+        </Link>
+        <div>
           <div className="text-center">
-            <p className="text-3xl">Hello, Friend</p>
-            <p>Enter your details to get your journey with us started</p>
+            <p className="text-3xl font-semibold mb-4">Hello, Friend</p>
+            <p className="text-md text-gray-500 mb-8">Enter your details to get your journey with us started</p>
 
-            <input
+            <div className="flex flex-col items-center justify-center my-4">
+          <div className="w-full text-left text-sm font-semibold mb-2">Full Name</div>
+          <input
               type="text"
-              placeholder="Full Name"
-              className="p-4 my-2 rounded w-2/3 bg-grey-bg focus:outline-black"
+              placeholder="John Doe"
+              className="p-4 rounded w-full border-2 border-gray-300 focus:outline-foreground"
             />
-            <input
+          </div>
+          <div className="flex flex-col items-center justify-center my-4">
+          <div className="w-full text-left text-sm font-semibold mb-2">Matric No.</div>
+          <input
               type="text"
-              placeholder="Matric No."
-              className=" p-4 my-2 rounded w-2/3 bg-grey-bg focus:outline-black"
+              placeholder="run/xyz/00/0000"
+              className="p-4 rounded w-full border-2 border-gray-300 focus:outline-foreground"
             />
-            <input
+          </div>
+          <div className="flex flex-col items-center justify-center my-4">
+          <div className="w-full text-left text-sm font-semibold mb-2">Password</div>
+          <input
               type="text"
-              placeholder="Password"
-              className=" p-4 my-2 rounded w-2/3 bg-grey-bg focus:outline-black"
+              placeholder="********"
+              className="p-4 rounded w-full border-2 border-gray-300 focus:outline-foreground"
             />
-            <button className="bg-foreground text-background text-lg my-2 p-4 rounded w-2/3 cursor-pointer">
+          </div>
+            <button className="bg-foreground hover:bg-indigo-900 text-background text-md my-2 p-4 rounded w-full cursor-pointer transition-transform duration-200 ease-in hover:scale-105">
               Sign Up
             </button>
             <div className="my-4">
               <p>
                 Have an account?{" "}
-                <Link className="text-foreground" href="login">
+                <Link className="font-bold text-sm text-black hover:text-foreground" href="login">
                   Login
                 </Link>
               </p>
             </div>
           </div>
+        </div>
         </div>
       </div>
     );
