@@ -1,4 +1,5 @@
 import Link from "next/link";
+
 import { ArrowLeftCircleIcon } from "@heroicons/react/24/outline";
 export default function Login() {
     return (
@@ -48,9 +49,11 @@ export default function Login() {
                 </Link>
               </p>
             </div>
+
           </div>
           </div>
         </div>
+
       </div>
       </div>
     );

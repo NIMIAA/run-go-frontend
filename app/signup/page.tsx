@@ -1,4 +1,5 @@
 import Link from "next/link";
+
 import { ArrowLeftCircleIcon } from "@heroicons/react/24/outline";
 export default function SignupPage() {
     return (
@@ -56,4 +57,4 @@ export default function SignupPage() {
         </div>
       </div>
     );
-}
+  }
