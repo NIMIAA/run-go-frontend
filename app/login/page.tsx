@@ -10,15 +10,15 @@ export default function Login() {
         </div>
         <div className="h-screen flex justify-center items-center mx-6 md:w-1/2">
         <Link href="/">
-        <ArrowLeftCircleIcon className="absolute top-4 left-4 size-12 md:text-white/50 cursor-pointer" />
+        <ArrowLeftCircleIcon className="absolute text-gray-400 top-4 left-4 size-6 md:text-white/50 cursor-pointer" />
         </Link>
           <div>
           <div className="text-center">
-            <p className="text-3xl font-semibold mb-4">Welcome back, Friend</p>
+            <p className="text-3xl font-semibold mb-4">Login</p>
             <p className="text-md text-gray-500 mb-8">To stay connected with us, login with your personal info</p>
           
           <div className="flex flex-col items-center justify-center my-4">
-          <div className="w-full text-left text-sm font-semibold mb-2">Matric No.</div>
+          <div className="w-full text-left text-sm font-semibold mb-2">Matric Number</div>
             <input
               type="text"
               placeholder="run/xyz/00/0000"
@@ -33,6 +33,7 @@ export default function Login() {
               placeholder="********"
               className="p-4 rounded w-full border-2 border-gray-300 focus:outline-foreground"
             />
+            <span className="text-right w-full text-sm mt-1 text-foreground">Forgot Password?</span>
           </div>
             <button className="bg-foreground hover:bg-indigo-900 text-background text-md my-2 p-4 rounded w-full cursor-pointer transition-transform duration-200 ease-in hover:scale-105">
            Continue as a user
@@ -42,12 +43,11 @@ export default function Login() {
             </button>
             
             <div className="my-4">
+                <Link href="signup">
               <p className="text-gray-600 text-sm">
-                Don&apos;t have an account?{" "}
-                <Link className="font-bold text-sm text-black hover:text-foreground" href="signup">
-                  Sign Up
-                </Link>
+                Don&apos;t have an account?{" "} <span className="font-bold text-sm text-black hover:text-foreground">Sign Up</span>
               </p>
+                </Link>
             </div>
 
           </div>

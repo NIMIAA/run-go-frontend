@@ -10,7 +10,7 @@ export default function SignupPage() {
 
         <div className="h-screen flex justify-center items-center  mx-6 md:w-1/2">
         <Link href="/">
-        <ArrowLeftCircleIcon className="absolute top-4 left-4 size-12 md:text-white/50 cursor-pointer" />
+        <ArrowLeftCircleIcon className="absolute text-gray-400 top-4 left-4 size-6 md:text-white/50 cursor-pointer" />
         </Link>
         <div>
           <div className="text-center">
@@ -45,12 +45,12 @@ export default function SignupPage() {
               Sign Up
             </button>
             <div className="my-4">
+                <Link href="login">
               <p>
-                Have an account?{" "}
-                <Link className="font-bold text-sm text-black hover:text-foreground" href="login">
-                  Login
-                </Link>
+                Have an account?{" "} <span className="font-bold text-sm text-black hover:text-foreground">Login</span>
+                  
               </p>
+                </Link>
             </div>
           </div>
         </div>

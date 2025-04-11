@@ -20,20 +20,24 @@ export default function Home() {
               Book a ride in seconds and get to your destination without the
               hassle
             </p>
-            <div className="mt-10 flex items-center justify-center gap-x-6">
+    
+            <div className="mt-10 flex flex-col md:flex-row items-center justify-center gap-x-6">
+            <div className="bg-hover-gold text-white rounded px-6 py-3 w-2/3">
               <a
-                href="#"
-                className=" bg-hover-gold text-white rounded  px-6 py-3"
+                href="login"
               >
                 Get started
               </a>
-              <a
+            </div>
+            <div className="text-sm/6 font-semibold text-white rounded px-6 border-white border py-3 my-4 w-2/3">
+            <a
                 href="#"
-                className="text-sm/6 font-semibold text-white rounded  px-6 border-white border py-3 "
               >
                 Become a driver <span aria-hidden="true">→</span>
               </a>
             </div>
+            </div>
+            
           </div>
         </div>
       </header>
