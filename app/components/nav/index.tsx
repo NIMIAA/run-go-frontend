@@ -8,13 +8,13 @@ import AppLogo from "../app/logo";
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <nav className="bg-transparent text-background px-8 md:px-16 py-4 flex justify-between items-center">
+    <nav className="bg-transparent text-background px-8 lg:px-16 py-4 flex justify-between items-center">
       <div className="">
         <Link href="/">
           <AppLogo />
         </Link>
       </div>
-      <div className="hidden md:block">
+      <div className="hidden lg:block">
         {routes.map((route) => (
           <Link
             href={route.path}
@@ -27,7 +27,7 @@ export default function Navbar() {
         ))}
       </div>
 
-      <div className="hidden font-medium md:block">
+      <div className="hidden font-medium lg:block">
         <Link
           href="login"
           className="px-4 py-2 mr-4 hover:bg-hover-gold rounded-sm transition-all duration-75"
@@ -42,7 +42,7 @@ export default function Navbar() {
         </Link>
       </div>
 
-      <div className="md:hidden">
+      <div className="lg:hidden">
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="focus:outline-none"
@@ -55,7 +55,7 @@ export default function Navbar() {
         </button>
       </div>
       {isOpen && (
-        <ul className="md:hidden bg-foreground py-4 space-y-4 w-3/4 h-[100vh] absolute top-0 left-0 flex justify-left items-start">
+        <ul className="lg:hidden bg-foreground py-4 space-y-4 w-3/4 h-[100vh] absolute top-0 left-0 flex justify-left items-start">
           <div className="px-8 w-full">
             <Link href="/">
               <AppLogo />

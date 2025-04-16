@@ -7,7 +7,7 @@ export default function Home() {
   
   return (
     <>
-      <header className="bg-black/50 bg-blend-multiply bg-cover bg-[url(/images/background/bg-3.jpg)] bg-bottom text-white h-[85vh] md:h-screen">
+      <header className="bg-black/50 bg-blend-multiply bg-cover bg-[url(/images/background/bg-3.jpg)] bg-bottom text-white h-[85vh] xl:h-screen">
         <nav className="bg-forground min-h-10 text-black bg-black/5 bg-blend-multiply">
           <Navbar />
         </nav>
@@ -21,7 +21,7 @@ export default function Home() {
               hassle
             </p>
     
-            <div className="mt-10 flex flex-col md:flex-row items-center justify-center gap-x-6">
+            <div className="mt-10 flex flex-col lg:flex-row items-center justify-center gap-x-6">
             <div className="bg-hover-gold text-white rounded px-6 py-3 w-2/3">
               <a
                 href="login"
@@ -42,17 +42,17 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="md:px-16">
+      <main className="xl:px-16">
         <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8 bg-blend-multiply bg-no-repeat bg-cover bg-white bg-opacity-75 bg-center">
           <div className="mx-auto max-w-2xl lg:text-center">
             <p className="mt-2 text-4xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-5xl lg:text-balance mb-4 text-center">
               How it works?
             </p>
           </div>
-          <div className="md:flex justify-center gap-4 p-8 text-center">
-          <div className="md:flex justify-center gap-4 p-8 text-center">
+          <div className="lg:flex justify-center gap-4 p-8 lg:p-2 lg:gap-1 text-center">
+          <div className="lg:flex justify-center p-8 lg:p-3 text-center">
             <div className="flex justify-center items-center">
-              <div className="flex flex-col justify-center items-center gap-y-4 md:gap-y-2">
+              <div className="flex flex-col justify-center items-center gap-y-4 lg:gap-y-2">
                 <div className="bg-yellow-500 size-20 p-6 rounded  text-center shadow-xl text-white shadow-yellow-500/30">
                   <MapPinIcon />
                 </div>
@@ -65,9 +65,9 @@ export default function Home() {
               </div>
             </div>
           </div>
-            <div className="md:flex justify-center gap-4 p-8 text-center">
+            <div className="lg:flex justify-center gap-4 p-8 lg:p-3 text-center">
               <div className="flex justify-center items-center">
-                <div className="flex flex-col justify-center items-center gap-y-4 md:gap-y-2">
+                <div className="flex flex-col justify-center items-center gap-y-4 lg:gap-y-2">
                   <div className="bg-violet-500 size-20 p-6 rounded  text-center shadow-xl text-white shadow-violet-500/30">
                     <UsersIcon />
                   </div>
@@ -80,9 +80,9 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <div className="md:flex justify-center gap-4 p-8 text-center">
+            <div className="lg:flex justify-center gap-4 p-8 lg:p-3 text-center">
               <div className="flex justify-center items-center">
-                <div className="flex flex-col justify-center items-center gap-y-4 md:gap-y-2">
+                <div className="flex flex-col justify-center items-center gap-y-4 lg:gap-y-2">
                   <div className="bg-lightBlue-500 size-20 p-6 rounded  text-center shadow-xl text-white shadow-lightBlue-500/30">
                     <FaceSmileIcon />
                   </div>
@@ -107,7 +107,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="md:grid grid-rows-2 grid-flow-col justify-center gap-8 p-8">
+          <div className="xl:grid grid-rows-2 grid-flow-col justify-center gap-8 lg:gap-x-20 p-8">
             <div className="md:flex justify-center items-center gap-4 mb-8">
               <Image
                 src="/images/reliable.jpg"
