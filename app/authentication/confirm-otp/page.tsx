@@ -17,17 +17,17 @@ export default function ConfirmOtp() {
         <Link href="/">
         <ArrowLeftCircleIcon className="absolute text-gray-400 top-4 left-4 size-6 xl:text-white/50 cursor-pointer" />
         </Link>
-        <div>
+        <div className="lg:w-3/5">
           <div className="text-center">
             <p className="text-3xl font-semibold mb-4">Password reset</p>
             <p className="text-md text-gray-500 mb-8">We sent a code to you</p>
            
-            <div className="">
+            <div className="flex justify-center items-center">
             <OtpInput
             
       value={otp}
       onChange={setOtp}
-      numInputs={4}
+      numInputs={6}
       renderSeparator={<span>-</span>}
       renderInput={(props) => <input {...props} />}
       containerStyle="mb-4"
@@ -37,7 +37,7 @@ export default function ConfirmOtp() {
         borderRadius: '0.5rem',
         border: '2px solid #ccc',
         textAlign: 'center',
-        margin: '0 0.5rem',
+        margin: '0 0.05rem',
       }}
       
     />

@@ -29,13 +29,13 @@ export default function Navbar() {
 
       <div className="hidden font-medium lg:block">
         <Link
-          href="login"
+          href="/authentication/login"
           className="px-4 py-2 mr-4 hover:bg-hover-gold rounded-sm transition-all duration-75"
         >
           Log In
         </Link>
         <Link
-          href="signup"
+          href="/authentication/signup"
           className="px-4 py-2 bg-background text-foreground hover:bg-hover-gold hover:text-background rounded-sm"
         >
           Sign Up

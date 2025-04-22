@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { ArrowLeftCircleIcon } from "@heroicons/react/24/outline";
-export default function SignupPage() {
+export default function SetPassword() {
     return (
       <div className="xl:flex">
         <div className=" w-1/2 ">
@@ -12,7 +12,7 @@ export default function SignupPage() {
         <Link href="/">
         <ArrowLeftCircleIcon className="absolute text-gray-400 top-4 left-4 size-6 xl:text-white/50 cursor-pointer" />
         </Link>
-        <div>
+        <div className="md:w-3/5 w-full">
           <div className="text-center">
             <p className="text-3xl font-semibold mb-4">Set new password</p>
             <p className="text-md text-gray-500 mb-8">Must be at least 8 characters</p>

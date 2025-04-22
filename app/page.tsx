@@ -24,7 +24,7 @@ export default function Home() {
             <div className="mt-10 flex flex-col lg:flex-row items-center justify-center gap-x-6">
             <div className="bg-hover-gold text-white rounded px-6 py-3 w-2/3">
               <a
-                href="login"
+                href="/authentication/login"
               >
                 Get started
               </a>

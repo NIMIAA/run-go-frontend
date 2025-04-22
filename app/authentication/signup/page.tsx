@@ -5,7 +5,7 @@ export default function SignupPage() {
     return (
       <div className="xl:flex">
         <div className=" w-1/2 ">
-          <div className="xl:bg-black/30 w-1/2 xl:bg-[url(/images/users-sign-up.jpg)] bg-cover bg-center bg-no-repeat bg-opacity-25 absolute inset-0"></div>
+          <div className="xl:bg-black/50 bg-blend-multiply w-1/2 xl:bg-[url(/images/users-sign-up.jpg)] bg-cover bg-center bg-no-repeat bg-opacity-25 absolute inset-0"></div>
         </div>
 
         <div className="h-screen flex justify-center items-center  mx-6 xl:w-1/2">
