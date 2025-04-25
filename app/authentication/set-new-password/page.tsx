@@ -36,13 +36,13 @@ export default function SetPassword() {
             <button className="bg-foreground hover:bg-indigo-900 text-background text-md my-2 p-4 rounded w-full cursor-pointer transition-transform duration-200 ease-in hover:scale-105">
               Reset Password
             </button>
-            <div className="my-4">
+            {/* <div className="my-4">
                 <Link href="login">
               <p className="font-bold text-sm text-black hover:text-foreground">
                 Back to log in{" "} 
               </p>
                 </Link>
-            </div>
+            </div> */}
           </div>
         </div>
         </div>

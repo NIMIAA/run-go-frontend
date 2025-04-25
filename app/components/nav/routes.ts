@@ -5,7 +5,7 @@ export const routes = [
   },
   {
     label: "Drive",
-    path: "/authentication/login",
+    path: "/authentication/drivers-login",
   },
   {
     label: "about",

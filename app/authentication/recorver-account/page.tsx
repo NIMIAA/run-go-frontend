@@ -33,13 +33,13 @@ export default function RecorverAccount() {
                 </button>
               </Link>
                 
-                <div className="my-4">
+                {/* <div className="my-4">
                     <Link href="/authentication/login">
                   <p className="font-bold text-sm text-black hover:text-foreground">
                     Back to log in{" "} 
                   </p>
                     </Link>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

@@ -24,14 +24,14 @@ export default function Home() {
             <div className="mt-10 flex flex-col lg:flex-row items-center justify-center gap-x-6">
             <div className="bg-hover-gold text-white rounded px-6 py-3 w-2/3">
               <a
-                href="/authentication/login"
+                href="/authentication/signup"
               >
                 Get started
               </a>
             </div>
             <div className="text-sm/6 font-semibold text-white rounded px-6 border-white border py-3 my-4 w-2/3">
             <a
-                href="#"
+                href="authentication/drivers-signin"
               >
                 Become a driver <span aria-hidden="true">→</span>
               </a>
