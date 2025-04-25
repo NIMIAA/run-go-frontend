@@ -16,7 +16,7 @@ export default function RecorverAccount() {
             <div className="md:w-3/5 w-full">
               <div className="text-center">
                 <p className="text-3xl font-semibold mb-4">Forgot password?</p>
-                <p className="text-md text-gray-500 mb-8">No worries, we'll send you reset instructions</p>
+                <p className="text-md text-gray-500 mb-8">No worries, we&apos;ll send you reset instructions</p>
 
                 <div className="flex flex-col items-center justify-center my-4">
               <div className="w-full text-left text-sm font-semibold mb-2">Email</div>
