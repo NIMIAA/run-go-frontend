@@ -31,7 +31,7 @@ export default function Home() {
             </div>
             <div className="text-sm/6 font-semibold text-white rounded px-6 border-white border py-3 my-4 w-2/3">
             <a
-                href="authentication/drivers-signin"
+                href="authentication/drivers-signup"
               >
                 Become a driver <span aria-hidden="true">→</span>
               </a>
