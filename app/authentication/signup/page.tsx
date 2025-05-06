@@ -41,9 +41,11 @@ export default function SignupPage() {
               className="p-4 rounded w-full border-2 border-gray-300 focus:outline-foreground"
             />
           </div>
+          <Link href="/user_dashboard/dashboard">
             <button className="bg-foreground hover:bg-indigo-900 text-background text-md my-2 p-4 rounded w-full cursor-pointer transition-transform duration-200 ease-in hover:scale-105">
               Sign Up
             </button>
+          </Link>
             <div className="my-4">
                 <Link href="login">
               <p>

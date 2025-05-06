@@ -39,12 +39,12 @@ export default function Login() {
               </span>
             
             </div>
+            <Link href="/user_dashboard/dashboard">
               <button className="bg-foreground hover:bg-indigo-900 text-background text-md my-2 p-4 rounded w-full cursor-pointer transition-transform duration-200 ease-in hover:scale-105">
             Continue as a user
               </button>
-              <button className="text-foreground border-foreground border-rounded  border-2 text-lg my-2 p-4 rounded w-full cursor-pointer transition-transform duration-200 ease-in hover:scale-105">
-              Continue as a driver
-              </button>
+            </Link>
+              
               
               <div className="my-4">
                   <Link href="/authentication/signup">
