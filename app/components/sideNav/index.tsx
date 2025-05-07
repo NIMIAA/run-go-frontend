@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { navRoutes } from "./navRoutes";
-import AppLogo from "../app/logo";
+// import AppLogo from "../app/logo";
 
 
 export default function sideNav () {

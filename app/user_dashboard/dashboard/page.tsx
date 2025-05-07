@@ -1,4 +1,5 @@
 import { ChevronRightIcon,ChevronDownIcon } from "@heroicons/react/24/outline";
+import Image from "next/image";
 
 export default function DashboardPage() {
     return (
@@ -6,12 +7,13 @@ export default function DashboardPage() {
             <div className="flex flex-row justify-between items-center">
                 <div className="flex flex-col justify-center items-start mt-8">
                 <p className="text-4xl font-bold">Welcome, User</p>
-                <p className="text-gray-500 mt-2">Here's what's happening with your account today!</p>
+                <p className="text-gray-500 mt-2">Here&apos;s what&apos;s happening with your account today!</p>
                 </div>
                 <div className="cursor-pointer mt-8 flex flex-row items-center justify-between gap-2">
                     <div className="text-sm flex flex-row items-center justify-center">
                         <div className="mr-2">
-                            <img src="/user.png" alt="" className="w-10 h-10 border rounded-full" />
+                            <Image src="/user.png" alt="" width={10} height={10} className="border rounded-full" />
+                            
                         </div>
                         <div className="flex flex-col items-start justify-center">
                         <p className="font-semibold">John Doe</p>
