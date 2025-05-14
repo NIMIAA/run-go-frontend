@@ -66,13 +66,13 @@ export default function DashboardViewLayout({
                   <div></div>
                 </div>
                 <div className="hidden md:block">
-                  <h6 className="-mb-2 font-medium">Jane Doe</h6>
-                  <small>jane@rungo.com</small>
+                  <h6 className="-mb-2 font-medium">Alex Mane</h6>
+                  <small>amane@rungo.com</small>
                 </div>
               </div>
             </div>
           </section>
-          <section className="py-12 px-16 h-[90vh] overflow-y-scroll bg-white/70">
+          <section className="py-4 px-6 mt-8 md:py-12 md:px-16 h-[90vh] overflow-y-scroll bg-white/70">
             {children}
           </section>
         </main>
