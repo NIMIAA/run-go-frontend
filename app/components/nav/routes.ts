@@ -1,11 +1,11 @@
 export const routes = [
   {
     label: "ride",
-    path: "login",
+    path: "/authentication/login",
   },
   {
     label: "Drive",
-    path: "login",
+    path: "/authentication/drivers-login",
   },
   {
     label: "about",

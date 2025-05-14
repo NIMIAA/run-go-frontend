@@ -1,12 +1,11 @@
 import Link from "next/link";
-
 import { ArrowLeftCircleIcon } from "@heroicons/react/24/outline";
-export default function Login() {
-    return (
-    <div>
+export default function DriversLoginPage() { 
+    return(
+<div>
       <div className="xl:flex">
         <div className=" w-1/2">
-          <div className="xl:bg-black/50 bg-blend-multiply xl:bg-[url(/images/background/bg-4.jpg)] w-1/2  bg-cover bg-center bg-no-repeat bg-opacity-25 absolute inset-0"></div>
+          <div className="xl:bg-black/70 bg-blend-multiply xl:bg-[url(/images/driver-sign-up.jpg)] w-1/2  bg-cover bg-center bg-no-repeat bg-opacity-25 absolute inset-0"></div>
         </div>
         
         <div className="h-screen flex justify-center items-center mx-6 xl:w-1/2">
@@ -15,11 +14,11 @@ export default function Login() {
           </Link>
           <div>
             <div className="text-center">
-              <p className="text-3xl font-semibold mb-4">Login</p>
-              <p className="text-md text-gray-500 mb-8">To stay connected with us, login with your personal info</p>
+              <p className="text-3xl font-semibold mb-4">Drive. Earn. Repeat.</p>
+              <p className="text-md text-gray-500 mb-8">To continue your journey, login with your personal info</p>
             
             <div className="flex flex-col items-center justify-center my-4">
-            <div className="w-full text-left text-sm font-semibold mb-2">Matric Number</div>
+            <div className="w-full text-left text-sm font-semibold mb-2">Registration Number</div>
               <input
                 type="text"
                 placeholder="run/xyz/00/0000"
@@ -39,15 +38,12 @@ export default function Login() {
               </span>
             
             </div>
-            <Link href="/user_dashboard/dashboard">
               <button className="bg-foreground hover:bg-indigo-900 text-background text-md my-2 p-4 rounded w-full cursor-pointer transition-transform duration-200 ease-in hover:scale-105">
-            Continue as a user
+            Continue
               </button>
-            </Link>
-              
               
               <div className="my-4">
-                  <Link href="/authentication/signup">
+                  <Link href="/authentication/drivers-signin">
                 <p className="text-gray-600 text-sm">
                   Don&apos;t have an account?{" "} <span className="font-bold text-sm text-black hover:text-foreground">Sign Up</span>
                 </p>
@@ -59,5 +55,6 @@ export default function Login() {
         </div>
       </div>
     </div>
-    );
+
+);
 }
