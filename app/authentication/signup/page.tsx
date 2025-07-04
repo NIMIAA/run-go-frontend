@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { ArrowLeftCircleIcon } from "@heroicons/react/24/outline";
 export default function SignupPage() {
+
     return (
       <div className="xl:flex">
         <div className=" w-1/2 ">

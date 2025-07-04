@@ -1,5 +1,6 @@
 import { ChevronRightIcon,ChevronDownIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function DashboardPage() {
     return (
@@ -41,10 +42,11 @@ export default function DashboardPage() {
                     <div className="row-span-4 flex flex-row gap-4">
                         <div className="bg-white shadow-md rounded-lg p-4 w-full flex flex-col items-center justify-center">
                             <div className="my-2 relative bg-[url(/images/users-sign-up.jpg)] bg-cover bg-center bg-no-repeat w-full rounded-lg border h-full flex justify-center">
-l
+                        <Link href="/user_dashboard/dashboard/rides">
                         <button className="bg-blue-700 text-white px-6 py-2 absolute bottom-4 rounded-lg shadow-md hover:bg-blue-600 transition">
                         Book a Ride
-                    </button>
+                        </button>
+                        </Link>
                             </div>
                         </div>                                                                                          
                     </div>

@@ -28,7 +28,7 @@ export const navRoutes = [
     },
     {
         label: "Logout",
-        path: "/user_dashboard/logout",
+        path: "/",
         icon: ArrowRightStartOnRectangleIcon,
     },
 ];
