@@ -1,10 +1,10 @@
 import Image from "next/image";
 import Navbar from "./components/nav";
 import Footer from "./components/app/footer";
-import { MapPinIcon, UsersIcon, FaceSmileIcon} from "@heroicons/react/24/outline";
+import { MapPinIcon, UsersIcon, FaceSmileIcon } from "@heroicons/react/24/outline";
 
 export default function Home() {
-  
+
   return (
     <>
       <header className="bg-black/50 bg-blend-multiply bg-cover bg-[url(/images/background/bg-3.jpg)] bg-bottom text-white h-[85vh] xl:h-screen">
@@ -20,24 +20,24 @@ export default function Home() {
               Book a ride in seconds and get to your destination without the
               hassle
             </p>
-    
+
             <div className="mt-10 flex flex-col lg:flex-row items-center justify-center gap-x-6">
-            <div className="bg-hover-gold text-white rounded px-6 py-3 w-2/3">
-              <a
-                href="/authentication/signup"
-              >
-                Get started
-              </a>
+              <div className="bg-hover-gold text-white rounded px-6 py-3 w-2/3">
+                <a
+                  href="/authentication/signup"
+                >
+                  Get started
+                </a>
+              </div>
+              <div className="text-sm/6 font-semibold text-white rounded px-6 border-white border py-3 my-4 w-2/3">
+                <a
+                  href="authentication/drivers-signup"
+                >
+                  Become a driver <span aria-hidden="true">→</span>
+                </a>
+              </div>
             </div>
-            <div className="text-sm/6 font-semibold text-white rounded px-6 border-white border py-3 my-4 w-2/3">
-            <a
-                href="authentication/drivers-signup"
-              >
-                Become a driver <span aria-hidden="true">→</span>
-              </a>
-            </div>
-            </div>
-            
+
           </div>
         </div>
       </header>
@@ -50,21 +50,21 @@ export default function Home() {
             </p>
           </div>
           <div className="lg:flex justify-center gap-4 p-8 lg:p-2 lg:gap-1 text-center">
-          <div className="lg:flex justify-center p-8 lg:p-3 text-center">
-            <div className="flex justify-center items-center">
-              <div className="flex flex-col justify-center items-center gap-y-4 lg:gap-y-2">
-                <div className="bg-yellow-500 size-20 p-6 rounded  text-center shadow-xl text-white shadow-yellow-500/30">
-                  <MapPinIcon />
+            <div className="lg:flex justify-center p-8 lg:p-3 text-center">
+              <div className="flex justify-center items-center">
+                <div className="flex flex-col justify-center items-center gap-y-4 lg:gap-y-2">
+                  <div className="bg-yellow-500 size-20 p-6 rounded  text-center shadow-xl text-white shadow-yellow-500/30">
+                    <MapPinIcon />
+                  </div>
+                  <p className="mt-2 text-2xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-3xl lg:text-balance">
+                    Select a destination
+                  </p>
+                  <p className="text-lg w-[80%]">
+                    Open the app and enter your destination
+                  </p>
                 </div>
-                <p className="mt-2 text-2xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-3xl lg:text-balance">
-                  Select a destination
-                </p>
-                <p className="text-lg w-[80%]">
-                  Open the app and enter your destination
-                </p>
               </div>
             </div>
-          </div>
             <div className="lg:flex justify-center gap-4 p-8 lg:p-3 text-center">
               <div className="flex justify-center items-center">
                 <div className="flex flex-col justify-center items-center gap-y-4 lg:gap-y-2">
@@ -96,9 +96,9 @@ export default function Home() {
               </div>
             </div>
           </div>
-          
+
         </div>
-      
+
 
         <div className="mx-auto max-w-7xl px-6 py-8 lg:px-8 bg-blend-multiply bg-no-repeat bg-cover bg-white bg-opacity-75 bg-center ">
           <div className="mx-auto max-w-2xl lg:text-center">
@@ -119,8 +119,8 @@ export default function Home() {
               <div className="my-2">
                 <p className="mt-2 text-2xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-3xl lg:text-balance">Fast and reliable</p>
                 <p className="text-md leading-1 mt-2 text-justify">
-                Easily book a ride with just a few taps. No more waiting—get a
-                ride within minutes, right from your campus.
+                  Easily book a ride with just a few taps. No more waiting—get a
+                  ride within minutes, right from your campus.
                 </p>
               </div>
             </div>

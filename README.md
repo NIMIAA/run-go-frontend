@@ -1,5 +1,48 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Features
+
+### Authentication System
+- **User Registration**: Complete signup flow with comprehensive validation
+  - Student/non-student toggle with conditional matric number field
+  - Real-time password strength indicator
+  - Email format and phone number validation
+  - Password confirmation matching
+  - Form validation with error feedback
+- **Email Verification**: Complete verification flow with resend functionality
+  - 6-digit OTP input with auto-focus
+  - Resend verification with rate limiting (3 attempts per 5 minutes)
+  - 60-second countdown timer
+  - Success/error state handling
+- **User Login**: Enhanced login with email verification check
+  - Student (matric number) and non-student (email) login options
+  - Email verification requirement enforcement
+  - JWT token storage and management
+  - Automatic redirect on authentication errors
+- **Password Reset**: Complete forgot password flow with OTP verification
+- **Protected Routes**: Authentication middleware for dashboard access
+
+### Security Features
+- Email verification required for account activation
+- Password strength requirements (8+ chars, uppercase, lowercase, number, special char)
+- Rate limiting on OTP resend (3 attempts per 5 minutes)
+- JWT token-based authentication
+- Automatic token refresh and logout on 401 errors
+- Form validation and error handling
+- Secure API integration with backend
+- Client-side validation with server-side enforcement
+
+### User Experience Features
+- Loading states for all API calls
+- Real-time form validation feedback
+- Success/error message displays
+- Responsive design for mobile and desktop
+- Accessibility features (ARIA labels, keyboard navigation)
+- Smooth transitions and animations
+- Auto-focus on OTP input
+- Auto-submit on Enter key
+- Clear step indicators (Registration → Email Verification → Login)
+
 ## Getting Started
 
 First, run the development server:
