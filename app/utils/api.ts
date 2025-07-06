@@ -142,4 +142,54 @@ export async function resetPassword(data: {
             error.response?.data?.message || error.message || "Password reset failed"
         );
     }
+}
+
+// Profile Image API Functions
+export interface ProfileData {
+    identifier: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    profileImageUrl?: string;
+    profileImagePath?: string;
+}
+
+export async function uploadProfileImage(file: File): Promise<ApiResponse<{ imageUrl: string }>> {
+    try {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const res = await axios.post(`${BASE_URL}/user/profile/upload-image`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return res.data;
+    } catch (error: any) {
+        throw new Error(
+            error.response?.data?.message || error.message || "Image upload failed"
+        );
+    }
+}
+
+export async function getUserProfile(): Promise<ApiResponse<ProfileData>> {
+    try {
+        const res = await axios.get(`${BASE_URL}/user/profile`);
+        return res.data;
+    } catch (error: any) {
+        throw new Error(
+            error.response?.data?.message || error.message || "Failed to fetch profile"
+        );
+    }
+}
+
+export async function deleteProfileImage(): Promise<ApiResponse<{ message: string }>> {
+    try {
+        const res = await axios.delete(`${BASE_URL}/user/profile/image`);
+        return res.data;
+    } catch (error: any) {
+        throw new Error(
+            error.response?.data?.message || error.message || "Failed to delete image"
+        );
+    }
 } 

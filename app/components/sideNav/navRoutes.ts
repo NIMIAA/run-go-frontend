@@ -1,4 +1,4 @@
-import { Squares2X2Icon,TruckIcon, CreditCardIcon, ChatBubbleBottomCenterTextIcon, Cog6ToothIcon, ArrowRightStartOnRectangleIcon } from "@heroicons/react/24/outline";
+import { Squares2X2Icon, TruckIcon, CreditCardIcon, ChatBubbleBottomCenterTextIcon, Cog6ToothIcon, ArrowRightStartOnRectangleIcon, UserCircleIcon } from "@heroicons/react/24/outline";
 
 export const navRoutes = [
     {
@@ -22,13 +22,19 @@ export const navRoutes = [
         icon: ChatBubbleBottomCenterTextIcon,
     },
     {
+        label: "Profile",
+        path: "/user_dashboard/profile",
+        icon: UserCircleIcon,
+    },
+    {
         label: "Settings",
         path: "/user_dashboard/dashboard/settings",
         icon: Cog6ToothIcon,
     },
     {
         label: "Logout",
-        path: "/",
+        path: "#",
         icon: ArrowRightStartOnRectangleIcon,
+        action: "logout"
     },
 ];

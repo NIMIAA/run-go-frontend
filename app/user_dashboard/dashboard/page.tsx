@@ -3,26 +3,38 @@ import { ChevronRightIcon, ChevronDownIcon, UserCircleIcon, Cog6ToothIcon } from
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { getUserData, User } from "@/app/utils/auth";
+import { getUserData, User, logout } from "@/app/utils/auth";
+import { getUserProfile } from "@/app/utils/api";
+import ProfileAvatar from "@/app/components/profile/ProfileAvatar";
 
 export default function DashboardPage() {
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
 
     useEffect(() => {
         const userData = getUserData();
         setUser(userData);
+
+        // Load profile data from backend
+        loadProfileData();
         setIsLoading(false);
     }, []);
+
+    const loadProfileData = async () => {
+        try {
+            const response = await getUserProfile();
+            if (response.success && response.data?.profileImageUrl) {
+                setProfileImageUrl(`http://localhost:5000${response.data.profileImageUrl}`);
+            }
+        } catch (error) {
+            console.error('Failed to load profile data:', error);
+        }
+    };
 
     const getUserDisplayName = () => {
         if (!user) return "User";
         return `${user.firstName} ${user.lastName}`;
-    };
-
-    const getUserInitials = () => {
-        if (!user) return "U";
-        return `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase();
     };
 
     return (
@@ -37,10 +49,12 @@ export default function DashboardPage() {
                 <div className="mt-8 relative group">
                     <div className="flex flex-row items-center justify-between gap-3 bg-white rounded-lg shadow-md p-3 border border-gray-200 hover:shadow-lg transition-shadow">
                         <div className="flex flex-row items-center gap-3">
-                            {/* Profile Picture Placeholder */}
-                            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-lg">
-                                {getUserInitials()}
-                            </div>
+                            {/* Profile Picture */}
+                            <ProfileAvatar
+                                user={user}
+                                profileImageUrl={profileImageUrl}
+                                size="md"
+                            />
 
                             {/* User Info */}
                             <div className="flex flex-col items-start justify-center">
@@ -77,10 +91,7 @@ export default function DashboardPage() {
                             </Link>
                             <hr className="my-1" />
                             <button
-                                onClick={() => {
-                                    localStorage.clear();
-                                    window.location.href = '/authentication/login';
-                                }}
+                                onClick={logout}
                                 className="flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors w-full text-left"
                             >
                                 Sign Out
