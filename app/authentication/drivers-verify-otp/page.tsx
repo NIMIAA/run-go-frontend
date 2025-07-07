@@ -4,6 +4,8 @@ import { ArrowLeftIcon, EnvelopeIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Notification from "@/app/components/ui/Notification";
+import { driverAuthAPI, ApiError, getErrorMessage, setAuthToken } from "@/app/utils/api";
+
 
 export default function DriverVerifyOTPPage() {
     const [otp, setOtp] = useState(['', '', '', '', '', '']);
@@ -73,24 +75,44 @@ export default function DriverVerifyOTPPage() {
         setIsLoading(true);
 
         try {
-            // Simulate API call - replace with actual API endpoint
-            await new Promise(resolve => setTimeout(resolve, 1500));
+            // Get email from session storage
+            const email = sessionStorage.getItem('driverRegistrationEmail');
+
+            if (!email) {
+                throw new Error('Email not found. Please try registering again.');
+            }
+
+            const response = await driverAuthAPI.verifyOTP({
+                email,
+                otp: otpString
+            });
 
             setNotification({
                 type: 'success',
-                message: 'Email verified successfully! Redirecting to driver dashboard...',
+                message: response.message || 'Email verified successfully! You can now login to your account.',
                 isVisible: true
             });
 
-            // Redirect to driver dashboard
+            // Clear session storage
+            sessionStorage.removeItem('driverRegistrationEmail');
+
+            // Redirect to driver login page
             setTimeout(() => {
-                router.push('/driver_dashboard/dashboard');
+                router.push('/authentication/drivers-login');
             }, 1500);
 
         } catch (error) {
+            let errorMessage = 'Verification failed. Please try again.';
+
+            if (error instanceof ApiError) {
+                errorMessage = getErrorMessage(error);
+            } else if (error instanceof Error) {
+                errorMessage = error.message;
+            }
+
             setNotification({
                 type: 'error',
-                message: 'Verification failed. Please try again.',
+                message: errorMessage,
                 isVisible: true
             });
         } finally {
@@ -102,12 +124,18 @@ export default function DriverVerifyOTPPage() {
         if (resendTimer > 0) return;
 
         try {
-            // Simulate API call - replace with actual API endpoint
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            // Get email from session storage
+            const email = sessionStorage.getItem('driverRegistrationEmail');
+
+            if (!email) {
+                throw new Error('Email not found. Please try registering again.');
+            }
+
+            const response = await driverAuthAPI.resendVerification(email);
 
             setNotification({
                 type: 'success',
-                message: 'OTP resent successfully!',
+                message: response.message || 'OTP resent successfully!',
                 isVisible: true
             });
 
@@ -124,16 +152,24 @@ export default function DriverVerifyOTPPage() {
             }, 1000);
 
         } catch (error) {
+            let errorMessage = 'Failed to resend OTP. Please try again.';
+
+            if (error instanceof ApiError) {
+                errorMessage = getErrorMessage(error);
+            } else if (error instanceof Error) {
+                errorMessage = error.message;
+            }
+
             setNotification({
                 type: 'error',
-                message: 'Failed to resend OTP. Please try again.',
+                message: errorMessage,
                 isVisible: true
             });
         }
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 via-blue-500 to-yellow-400">
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#191970] via-[#191970]/90 to-[#DAA520]">
             <div className="max-w-md w-full space-y-8 p-8">
                 <div className="bg-white rounded-lg shadow-xl p-8">
                     {/* Header */}
@@ -145,6 +181,8 @@ export default function DriverVerifyOTPPage() {
                         <p className="text-gray-600">
                             We've sent a 6-digit verification code to your email address
                         </p>
+
+
                     </div>
 
                     {/* OTP Form */}
@@ -158,7 +196,9 @@ export default function DriverVerifyOTPPage() {
                                 {otp.map((digit, index) => (
                                     <input
                                         key={index}
-                                        ref={(el) => (inputRefs.current[index] = el)}
+                                        ref={(el) => {
+                                            inputRefs.current[index] = el;
+                                        }}
                                         type="text"
                                         maxLength={1}
                                         value={digit}
@@ -203,6 +243,8 @@ export default function DriverVerifyOTPPage() {
                                 : "Resend OTP"
                             }
                         </button>
+
+
                     </div>
 
                     {/* Back to Signup */}
@@ -235,6 +277,8 @@ export default function DriverVerifyOTPPage() {
                 isVisible={notification.isVisible}
                 onClose={() => setNotification(prev => ({ ...prev, isVisible: false }))}
             />
+
+
         </div>
     );
 } 

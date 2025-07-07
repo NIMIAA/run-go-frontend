@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { getDriverData, Driver, toggleDriverAvailability, updateDriverLocation } from "@/app/utils/driverAuth";
 import {
     ChevronRightIcon,
@@ -9,14 +9,48 @@ import {
     CurrencyDollarIcon,
     TruckIcon,
     CheckCircleIcon,
-    XCircleIcon
+    XCircleIcon,
+    ChatBubbleBottomCenterTextIcon
 } from "@heroicons/react/24/outline";
 import ProfileAvatar from "@/app/components/profile/ProfileAvatar";
+import Link from "next/link";
+import { DriverSocketProvider, useDriverSocket } from "@/app/context/DriverSocketContext";
 
-export default function DriverDashboardPage() {
+function RideRequestModal() {
+    const { currentRideRequest, sendRideResponse, setCurrentRideRequest } = useDriverSocket();
+    if (!currentRideRequest) return null;
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+            <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-6 relative">
+                <button className="absolute top-2 right-2 text-gray-400 hover:text-gray-700" onClick={() => setCurrentRideRequest(null)}>&times;</button>
+                <h2 className="text-xl font-bold mb-4">New Ride Request</h2>
+                <div className="space-y-2 mb-4">
+                    <div><span className="font-semibold">Pickup:</span> {currentRideRequest.pickupLocation}</div>
+                    <div><span className="font-semibold">Destination:</span> {currentRideRequest.destination}</div>
+                    <div><span className="font-semibold">Amount:</span> ₦{currentRideRequest.estimatedAmount}</div>
+                    <div><span className="font-semibold">Requested At:</span> {new Date(currentRideRequest.createdAt).toLocaleString()}</div>
+                </div>
+                <div className="flex gap-4 justify-end">
+                    <button
+                        className="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700"
+                        onClick={() => { sendRideResponse(currentRideRequest.identifier, "accepted"); setCurrentRideRequest(null); }}
+                    >Accept</button>
+                    <button
+                        className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700"
+                        onClick={() => { sendRideResponse(currentRideRequest.identifier, "rejected"); setCurrentRideRequest(null); }}
+                    >Reject</button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function DashboardContent() {
     const [driver, setDriver] = useState<Driver | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isTogglingAvailability, setIsTogglingAvailability] = useState(false);
+    const [avatarDropdownOpen, setAvatarDropdownOpen] = useState(false);
+    const avatarDropdownTimeout = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
         const driverData = getDriverData();
@@ -108,14 +142,62 @@ export default function DriverDashboardPage() {
                     <p className="text-gray-500 mt-2">Ready to hit the road?</p>
                 </div>
 
-                {/* Availability Toggle */}
-                <div className="mt-8">
+                {/* Profile Avatar Link and Availability Toggle */}
+                <div className="mt-8 flex items-center gap-6 relative">
+                    {/* Profile Avatar Link with Dropdown (fixed hover) */}
+                    <div
+                        className="relative"
+                        onMouseEnter={() => {
+                            if (avatarDropdownTimeout.current) clearTimeout(avatarDropdownTimeout.current);
+                            setAvatarDropdownOpen(true);
+                        }}
+                        onMouseLeave={() => {
+                            avatarDropdownTimeout.current = setTimeout(() => setAvatarDropdownOpen(false), 200);
+                        }}
+                    >
+                        <Link href="/driver_dashboard/profile" className="block">
+                            <ProfileAvatar
+                                user={{
+                                    id: driver.identifier,
+                                    firstName: driver.firstName,
+                                    lastName: driver.lastName,
+                                    email: driver.email,
+                                    isStudent: false,
+                                    emailVerified: driver.isVerified,
+                                    phoneNumber: driver.phoneNumber
+                                }}
+                                size="md"
+                                showBorder={true}
+                            />
+                        </Link>
+                        {avatarDropdownOpen && (
+                            <div
+                                className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-20"
+                                onMouseEnter={() => {
+                                    if (avatarDropdownTimeout.current) clearTimeout(avatarDropdownTimeout.current);
+                                    setAvatarDropdownOpen(true);
+                                }}
+                                onMouseLeave={() => {
+                                    avatarDropdownTimeout.current = setTimeout(() => setAvatarDropdownOpen(false), 200);
+                                }}
+                            >
+                                <div className="py-2">
+                                    <Link href="/driver_dashboard/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:font-semibold transition-colors">
+                                        Change Profile Picture
+                                    </Link>
+                                    <Link href="/driver_dashboard/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:font-semibold transition-colors">
+                                        Profile Settings
+                                    </Link>
+                                </div>
+                            </div>
+                        )}
+                    </div>
                     <button
                         onClick={handleAvailabilityToggle}
                         disabled={isTogglingAvailability}
                         className={`flex items-center gap-3 px-6 py-3 rounded-lg font-semibold transition-all duration-300 ${driver.isAvailable
-                                ? 'bg-green-600 text-white hover:bg-green-700'
-                                : 'bg-red-600 text-white hover:bg-red-700'
+                            ? 'bg-green-600 text-white hover:bg-green-700'
+                            : 'bg-red-600 text-white hover:bg-red-700'
                             } disabled:opacity-50 disabled:cursor-not-allowed`}
                     >
                         {isTogglingAvailability ? (
@@ -259,6 +341,12 @@ export default function DriverDashboardPage() {
                                     <span className="text-sm font-medium">View Earnings</span>
                                 </div>
                             </button>
+                            <button className="w-full text-left p-3 bg-yellow-50 rounded-lg hover:bg-yellow-100 transition-colors">
+                                <Link href="/driver_dashboard/messages" className="flex items-center gap-2">
+                                    <ChatBubbleBottomCenterTextIcon className="h-5 w-5 text-yellow-600" />
+                                    <span className="text-sm font-medium">Messages</span>
+                                </Link>
+                            </button>
                             <button className="w-full text-left p-3 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors">
                                 <div className="flex items-center gap-2">
                                     <StarIcon className="h-5 w-5 text-purple-600" />
@@ -270,5 +358,14 @@ export default function DriverDashboardPage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function DriverDashboardPageWrapper() {
+    return (
+        <DriverSocketProvider>
+            <RideRequestModal />
+            <DashboardContent />
+        </DriverSocketProvider>
     );
 } 

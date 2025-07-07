@@ -4,6 +4,7 @@ import { EyeIcon, EyeSlashIcon, ArrowLeftCircleIcon } from "@heroicons/react/24/
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Notification from "@/app/components/ui/Notification";
+import { driverAuthAPI, ApiError, getErrorMessage } from "@/app/utils/api";
 
 interface PasswordStrength {
   score: number;
@@ -157,18 +158,34 @@ export default function DriverSignupPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Skip validation for now - will be implemented with API
+    if (!validateForm()) {
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      // Simulate API call - replace with actual API endpoint
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const registrationData = {
+        email: formData.email,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        phoneNumber: formData.phoneNumber,
+        password: formData.password,
+        carIdentifier: formData.carIdentifier
+      };
+
+      const response = await driverAuthAPI.registerDriver(registrationData);
 
       setNotification({
         type: 'success',
-        message: 'Registration successful! Please verify your email.',
+        message: response.message || 'Registration successful! Please verify your email.',
         isVisible: true
       });
+
+      // Store email for OTP verification page
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem('driverRegistrationEmail', formData.email);
+      }
 
       // Redirect to driver OTP verification page
       setTimeout(() => {
@@ -176,9 +193,15 @@ export default function DriverSignupPage() {
       }, 1500);
 
     } catch (error) {
+      let errorMessage = 'Registration failed. Please try again.';
+
+      if (error instanceof ApiError) {
+        errorMessage = getErrorMessage(error);
+      }
+
       setNotification({
         type: 'error',
-        message: 'Registration failed. Please try again.',
+        message: errorMessage,
         isVisible: true
       });
     } finally {
@@ -203,12 +226,79 @@ export default function DriverSignupPage() {
   };
 
   return (
-    <div className="xl:flex h-screen w-full">
-      {/* Left Side - Background Image with Gradient Overlay */}
+    <div className="min-h-screen w-full overflow-x-hidden">
+      {/* Mobile/Tablet Header - Left Side Content */}
+      <div className="xl:hidden relative h-96 bg-[url(/images/driver-sign-up.jpg)] bg-cover bg-center bg-no-repeat">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#191970]/90 via-[#191970]/80 to-[#DAA520]/70"></div>
+        {/* Back to Home Arrow - Mobile */}
+        <Link href="/" className="absolute top-4 left-4 z-20 text-white/80 hover:text-white transition-colors duration-200">
+          <ArrowLeftCircleIcon className="w-8 h-8" />
+        </Link>
+        {/* Mobile Overlay Content */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-center text-white px-6">
+            {/* Logo */}
+            <div className="flex items-center justify-center mb-4">
+              <img src="/images/Logo.png" alt="RUNGO Logo" className="w-24 h-auto object-contain drop-shadow-lg" onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.style.display = 'none';
+                const parent = e.currentTarget.parentNode;
+                if (parent) {
+                  (parent as HTMLElement).insertAdjacentHTML(
+                    'beforeend',
+                    "<span style='color:white;font-size:1.5rem;font-weight:bold;'>RUNGO</span>"
+                  );
+                }
+              }} />
+            </div>
+
+            <h1 className="text-2xl sm:text-3xl font-bold mb-4 leading-tight">
+              Join Our RUNGo Driver Network
+            </h1>
+            <p className="text-lg sm:text-xl mb-6 text-blue-100">
+              Start earning by providing safe and reliable rides
+            </p>
+            <div className="space-y-3 text-left max-w-sm mx-auto mb-6">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+                  <span className="text-white text-sm">💰</span>
+                </div>
+                <span className="text-blue-100 text-sm">Earn competitive rates</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+                  <span className="text-white text-sm">🚗</span>
+                </div>
+                <span className="text-blue-100 text-sm">Flexible working hours</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+                  <span className="text-white text-sm">🛡️</span>
+                </div>
+                <span className="text-blue-100 text-sm">Safe and secure platform</span>
+              </div>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
+              <p className="text-xs text-blue-100 mb-1">
+                📧 Use a real email address you can access
+              </p>
+              <p className="text-xs text-blue-200">
+                Verification code will be sent there
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Desktop Left Side - Background Image with Gradient Overlay */}
       <div className="hidden xl:block fixed left-0 top-0 h-screen w-1/2 z-0">
         <div className="absolute inset-0 bg-[url(/images/driver-sign-up.jpg)] bg-cover bg-center bg-no-repeat"></div>
         <div className="absolute inset-0 bg-gradient-to-br from-[#191970]/90 via-[#191970]/80 to-[#DAA520]/70"></div>
-        {/* Overlay Content */}
+        {/* Back to Home Arrow - Desktop */}
+        <Link href="/" className="absolute top-6 left-6 z-20 text-white/80 hover:text-white transition-colors duration-200">
+          <ArrowLeftCircleIcon className="w-10 h-10" />
+        </Link>
+        {/* Desktop Overlay Content */}
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center text-white px-8">
             {/* Logo instead of emoji */}
@@ -225,9 +315,7 @@ export default function DriverSignupPage() {
                 }
               }} />
             </div>
-            <Link href="/" className="inline-block mb-4 text-lg font-semibold text-[#DAA520] hover:underline hover:text-white transition-colors duration-200 xl:mb-8">
-              ← Back to Home
-            </Link>
+
             <h1 className="text-4xl sm:text-5xl font-bold mb-6 leading-tight">
               Join Our RUNGo Driver Network
             </h1>
@@ -267,17 +355,63 @@ export default function DriverSignupPage() {
       </div>
 
       {/* Right Side - Signup Form */}
-      <div ref={formContainerRef} className="flex-1 xl:ml-[50vw] min-h-screen w-full overflow-y-auto relative z-10 bg-white">
-        <div className="flex justify-center items-start pt-8 pb-8 px-4 sm:px-6">
-          <Link href="/">
-            <ArrowLeftCircleIcon className="absolute text-gray-400 top-4 left-4 size-6 xl:text-white/50 cursor-pointer" />
-          </Link>
+      <div ref={formContainerRef} className="xl:ml-[50vw] min-h-screen max-w-full overflow-y-auto overflow-x-hidden relative z-10 bg-white">
+        <div className="flex justify-center items-start xl:pt-8 pt-4 pb-8 px-4 sm:px-6">
           <div className="w-full max-w-md">
             <div className="text-center mb-8">
               <p className="text-2xl sm:text-3xl font-semibold mb-4">Create Driver Account</p>
               <p className="text-sm text-gray-500 mb-6">
                 Fill in your details to get started
               </p>
+
+              {/* Simple Test Button - Only in development */}
+              {process.env.NODE_ENV === 'development' && (
+                <button
+                  onClick={async () => {
+                    const testData = {
+                      email: "test@example.com",
+                      firstName: "Test",
+                      lastName: "User",
+                      phoneNumber: "+2348012345678",
+                      password: "TestPassword123!",
+                      carIdentifier: "TEST123"
+                    };
+
+                    alert('🧪 Testing registration endpoint...');
+
+                    try {
+                      const response = await fetch('http://localhost:5000/v1/driver/auth/register', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(testData)
+                      });
+
+                      const result = await response.json();
+                      alert(`📋 Registration Test Result:\nStatus: ${response.status}\nMessage: ${result.message || 'No message'}`);
+
+                      // Also test OTP verification endpoint
+                      if (response.ok) {
+                        const otpResponse = await fetch('http://localhost:5000/v1/driver/auth/verify-registration', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({
+                            email: testData.email,
+                            otp: "123456"
+                          })
+                        });
+
+                        const otpResult = await otpResponse.json();
+                        alert(`🔐 OTP Endpoint Test:\nStatus: ${otpResponse.status}\nMessage: ${otpResult.message || 'No message'}`);
+                      }
+                    } catch (error) {
+                      alert(`❌ Registration test failed: ${error}`);
+                    }
+                  }}
+                  className="mb-4 text-xs bg-blue-100 hover:bg-blue-200 text-blue-800 px-3 py-1 rounded"
+                >
+                  🧪 Test Registration API
+                </button>
+              )}
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 {/* Name Fields */}

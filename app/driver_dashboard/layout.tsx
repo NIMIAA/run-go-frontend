@@ -11,10 +11,10 @@ export default function DriverDashboardLayout({
         <DriverProtectedRoute>
             <div>
                 <div className="flex flex-row h-screen bg-gray-100">
-                    <div className="w-1/5 bg-white shadow-md">
+                    <div className="w-1/5 bg-white shadow-md h-screen fixed left-0 top-0 z-30">
                         <DriverSideNav />
                     </div>
-                    <div className="w-4/5 p-4">{children}</div>
+                    <div className="flex-1 ml-[20%] p-4 overflow-y-auto h-screen">{children}</div>
                 </div>
             </div>
         </DriverProtectedRoute>

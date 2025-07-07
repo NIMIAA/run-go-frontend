@@ -33,19 +33,9 @@ export const driverNavRoutes = [
         icon: CreditCardIcon,
     },
     {
-        label: "Messages",
-        path: "/driver_dashboard/messages",
-        icon: ChatBubbleBottomCenterTextIcon,
-    },
-    {
         label: "Location",
         path: "/driver_dashboard/location",
         icon: MapPinIcon,
-    },
-    {
-        label: "Reviews",
-        path: "/driver_dashboard/reviews",
-        icon: StarIcon,
     },
     {
         label: "Profile",
