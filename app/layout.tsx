@@ -22,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" data-theme="light">
-      <body className={poppins.className}>{children}</body>
+      <body className={`${poppins.className} bg-gray-100 min-h-screen`}>{children}</body>
     </html>
   );
 }

@@ -1,4 +1,15 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "leaflet/dist/leaflet.css";
 
+
+.leaflet-container {
+    height: 100%;
+    width: 100%;
+  }
+  
+  .leaflet-control-attribution {
+      font-size: 10px;
+    }
+
+    @tailwind base;
+    @tailwind components;
+    @tailwind utilities;
