@@ -124,6 +124,84 @@ const LocationDropdowns: React.FC<{
   );
 };
 
+// Add AvailableDriversList component
+const AvailableDriversList: React.FC<{
+  pickup: string;
+  dropoff: string;
+  onSelect: (driver: any) => void;
+  selectedDriverId?: string;
+}> = ({ pickup, dropoff, onSelect, selectedDriverId }) => {
+  const [drivers, setDrivers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!pickup || !dropoff) return;
+    setLoading(true);
+    setError(null);
+    setDrivers([]);
+    fetch(
+      `http://localhost:5000/v1/booking/available-drivers?pickup=${pickup}&dropoff=${dropoff}`
+    )
+      .then((res) => {
+        if (!res.ok) throw new Error('Failed to fetch available drivers');
+        return res.json();
+      })
+      .then((data) => {
+        setDrivers(data.data || []);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message || 'Error loading drivers');
+        setLoading(false);
+      });
+  }, [pickup, dropoff]);
+
+  if (!pickup || !dropoff) return null;
+  if (loading) return <div>Loading available drivers...</div>;
+  if (error) return <div className="text-red-500">Error: {error}</div>;
+  if (drivers.length === 0) return <div className="text-gray-500">No drivers available for this route.</div>;
+
+  return (
+    <div className="space-y-3">
+      {drivers.map((driver) => (
+        <div
+          key={driver.identifier}
+          className={`flex flex-row items-center justify-between p-4 rounded border cursor-pointer transition-all ${selectedDriverId === driver.identifier
+            ? 'border-blue-500 bg-blue-50'
+            : 'border-gray-200 bg-white hover:bg-gray-50'
+            }`}
+          onClick={() => onSelect(driver)}
+        >
+          <div className="flex flex-col">
+            <span className="font-semibold text-gray-800">
+              {driver.firstName} {driver.lastName}
+            </span>
+            <span className="text-sm text-gray-500">
+              Car: {driver.carIdentifier || 'Unknown'}
+            </span>
+            <span className="text-sm text-gray-500">
+              Phone: {driver.phoneNumber}
+            </span>
+          </div>
+          <button
+            className={`ml-4 px-4 py-2 rounded text-sm font-medium transition-colors ${selectedDriverId === driver.identifier
+              ? 'bg-blue-600 text-white'
+              : 'bg-gray-200 text-gray-700 hover:bg-blue-100'
+              }`}
+            onClick={(e) => {
+              e.stopPropagation();
+              onSelect(driver);
+            }}
+          >
+            {selectedDriverId === driver.identifier ? 'Selected' : 'Select'}
+          </button>
+        </div>
+      ))}
+    </div>
+  );
+};
+
 export default function RidesPage() {
   const [isOpen, setIsOpen] = useState(false);
   const [pickup, setPickup] = useState("");
@@ -137,6 +215,7 @@ export default function RidesPage() {
   const [user, setUser] = useState<User | null>(null);
   const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedDriver, setSelectedDriver] = useState<any | null>(null);
 
   // Auto-slide functionality
   useEffect(() => {
@@ -179,6 +258,7 @@ export default function RidesPage() {
     setDropoff("");
     setError("");
     setShowLocationInputs(false);
+    setSelectedDriver(null);
   }
 
   const handleNext = () => {
@@ -363,26 +443,22 @@ export default function RidesPage() {
                     {step === 2 && (
                       <>
                         <p className="text-lg font-bold mb-2">Available Rides</p>
-                        <p className="text-gray-500 text-sm mb-4">1 rides found</p>
-                        <div className="p-4 rounded w-full border-2 border-gray-300 mb-4">
-                          <p className="font-semibold">Uncle Dami</p>
-                          <div className="flex flex-row items-center text-gray-400 text-sm py-2">
-                            <div className="px-1.5">Keke</div>
-                            <div className="px-1.5">3 seats</div>
-                            <div className="px-1.5">ratings</div>
-                          </div>
-                          <div className="p-2 rounded w-full border-2 border-gray-300 text-center text-black/50 cursor-pointer hover:bg-gray-50" onClick={handleSelectDriver}>
-                            Select Driver
-                          </div>
-                          {isWaiting && <p className="text-sm text-gray-500 mt-2">Waiting for driver response...</p>}
-                          {responseStatus === "declined" && (
-                            <p className="text-red-500 text-xs mt-2">Driver declined the ride. Please select another driver.</p>
-                          )}
-                        </div>
+                        <AvailableDriversList
+                          pickup={pickup}
+                          dropoff={dropoff}
+                          onSelect={(driver) => {
+                            setSelectedDriver(driver);
+                          }}
+                          selectedDriverId={selectedDriver?.identifier}
+                        />
+                        {selectedDriver && (
+                          <div className="mt-4 text-green-600 text-sm">Selected: {selectedDriver.firstName} {selectedDriver.lastName}</div>
+                        )}
                         <div className="mt-4">
                           <Button
                             className="inline-flex items-center gap-2 rounded-md bg-gray-700 px-6 py-2 text-sm font-semibold text-white shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-gray-600 data-open:bg-gray-700"
                             onClick={handleNext}
+                            disabled={!selectedDriver}
                           >
                             Next
                           </Button>
