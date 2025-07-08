@@ -273,13 +273,57 @@ sessionStorage.removeItem('driverRegistrationEmail');
 ### Login
 ```typescript
 // 3. Login
-const loginResponse = await driverAuthAPI.loginDriver({
+const response = await driverAuthAPI.loginDriver({
   email: "driver@example.com",
   password: "StrongPassword123!"
 });
 
-// Store JWT token
-setAuthToken(loginResponse.data!.jwtToken);
+setDriverAuthToken(response.data!.jwtToken);
+
+if (response.data && response.data.driver) {
+  // If driver is present in response, save it
+  const apiDriver = response.data.driver;
+  setDriverData({
+    identifier: apiDriver.identifier,
+    carIdentifier: apiDriver.carIdentifier,
+    firstName: apiDriver.firstName,
+    lastName: apiDriver.lastName,
+    email: apiDriver.email,
+    phoneNumber: apiDriver.phoneNumber,
+    isVerified: apiDriver.isVerified,
+    isAvailable: apiDriver.isAvailable,
+    completedRides: apiDriver.completedRides,
+    averageRating: apiDriver.averageRating,
+    dateAdded: new Date(),
+    lastUpdatedAt: new Date(),
+    currentLatitude: null,
+    currentLongitude: null,
+  });
+} else {
+  // Fetch driver profile using the token and save it
+  try {
+    const token = response.data!.jwtToken;
+    const profileResponse = await driverAuthAPI.getDriverProfile(token);
+    if (profileResponse && profileResponse.data) {
+      setDriverData({
+        ...profileResponse.data,
+        dateAdded: new Date(),
+        lastUpdatedAt: new Date(),
+        currentLatitude: null,
+        currentLongitude: null,
+      });
+    }
+  } catch (profileError) {
+    // Optionally handle profile fetch error
+    setNotification({
+      type: 'error',
+      message: 'Login succeeded but failed to load driver profile.',
+      isVisible: true
+    });
+    setIsLoading(false);
+    return;
+  }
+}
 ```
 
 ## Security Considerations
@@ -316,3 +360,44 @@ NEXT_PUBLIC_DEBUG=true
 ```
 
 This will log API requests and responses to the console for debugging purposes. 
+
+## Updated Driver Auth Functions
+
+### Updated `setDriverData`
+```ts
+export const setDriverData = (driver: Driver): void => {
+    if (typeof window !== 'undefined') {
+        // Convert Date objects to ISO strings before saving
+        const driverToSave = {
+            ...driver,
+            dateAdded: driver.dateAdded instanceof Date ? driver.dateAdded.toISOString() : driver.dateAdded,
+            lastUpdatedAt: driver.lastUpdatedAt instanceof Date ? driver.lastUpdatedAt.toISOString() : driver.lastUpdatedAt,
+        };
+        localStorage.setItem('driver', JSON.stringify(driverToSave));
+    }
+};
+```
+
+### Updated `getDriverData`
+```ts
+export const getDriverData = (): Driver | null => {
+    if (typeof window !== 'undefined') {
+        const driverData = localStorage.getItem('driver');
+        if (driverData) {
+            try {
+                const parsed = JSON.parse(driverData);
+                // Convert date strings back to Date objects
+                return {
+                    ...parsed,
+                    dateAdded: parsed.dateAdded ? new Date(parsed.dateAdded) : new Date(),
+                    lastUpdatedAt: parsed.lastUpdatedAt ? new Date(parsed.lastUpdatedAt) : new Date(),
+                };
+            } catch (error) {
+                console.error('Error parsing driver data:', error);
+                return null;
+            }
+        }
+    }
+    return null;
+};
+``` 

@@ -483,4 +483,46 @@ export async function getDriverRideHistory(driverIdentifier: string, page = 1, l
     } catch (error) {
         throw error;
     }
+}
+
+// Wallet API functions
+export async function fundWallet(amount: number, email: string) {
+    try {
+        const res = await axios.post(
+            'http://localhost:5000/v1/wallet/fund',
+            { amount, email },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }
+        );
+        return res.data;
+    } catch (error: any) {
+        throw new Error(
+            error.response?.data?.message || error.message || 'Failed to initiate funding'
+        );
+    }
+}
+
+export async function getWalletBalance(email: string) {
+    try {
+        const res = await axios.get(`http://localhost:5000/v1/wallet/balance?email=${encodeURIComponent(email)}`);
+        return res.data;
+    } catch (error: any) {
+        throw new Error(
+            error.response?.data?.message || error.message || 'Failed to fetch balance'
+        );
+    }
+}
+
+export async function getWalletTransactions(email: string) {
+    try {
+        const res = await axios.get(`http://localhost:5000/v1/wallet/transactions?email=${encodeURIComponent(email)}`);
+        return res.data;
+    } catch (error: any) {
+        throw new Error(
+            error.response?.data?.message || error.message || 'Failed to fetch wallet transactions'
+        );
+    }
 } 

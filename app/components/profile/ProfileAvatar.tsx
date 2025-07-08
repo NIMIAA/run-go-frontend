@@ -55,7 +55,7 @@ export default function ProfileAvatar({
                         const parent = target.parentElement;
                         if (parent) {
                             parent.innerHTML = `
-                                <div class="w-full h-full bg-gradient-to-br from-blue-600 via-blue-500 to-yellow-400 rounded-full flex items-center justify-center text-white font-bold ${sizeClasses.includes('text-2xl') ? 'text-2xl' : sizeClasses.includes('text-xl') ? 'text-xl' : sizeClasses.includes('text-lg') ? 'text-lg' : 'text-sm'}">
+                                <div class="w-full h-full bg-gradient-to-br from-[#191970] via-blue-500 to-yellow-400 rounded-full flex items-center justify-center text-white font-bold ${sizeClasses.includes('text-2xl') ? 'text-2xl' : sizeClasses.includes('text-xl') ? 'text-xl' : sizeClasses.includes('text-lg') ? 'text-lg' : sizeClasses.includes('text-base') ? 'text-base' : sizeClasses.includes('text-sm') ? 'text-sm' : 'text-xs'}">
                                     ${getUserInitials()}
                                 </div>
                             `;
@@ -67,7 +67,7 @@ export default function ProfileAvatar({
     }
 
     return (
-        <div className={`${sizeClasses} bg-gradient-to-br from-blue-600 via-blue-500 to-yellow-400 rounded-full flex items-center justify-center text-white font-bold shadow-lg ${borderClasses} ${className}`}>
+        <div className={`${sizeClasses} bg-gradient-to-br from-[#191970] via-blue-500 to-yellow-400 rounded-full flex items-center justify-center text-white font-bold shadow-lg ${borderClasses} ${className}`}>
             {getUserInitials()}
         </div>
     );

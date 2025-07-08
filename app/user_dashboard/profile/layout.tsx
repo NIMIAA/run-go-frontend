@@ -14,7 +14,7 @@ export default function ProfileLayout({
                     <div className="w-1/5 bg-white shadow-md">
                         <SideNav />
                     </div>
-                    <div className="w-4/5 p-4 overflow-y-auto">{children}</div>
+                    <div className="w-4/5 p-4 h-screen overflow-y-auto">{children}</div>
                 </div>
             </div>
         </ProtectedRoute>

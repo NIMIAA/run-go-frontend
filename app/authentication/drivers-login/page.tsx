@@ -60,24 +60,50 @@ export default function DriverLoginPage() {
 
       // Store the JWT token for driver
       setDriverAuthToken(response.data!.jwtToken);
-      // Store the driver profile data (normalize fields)
-      const apiDriver = response.data!.driver;
-      setDriverData({
-        identifier: apiDriver.identifier,
-        carIdentifier: apiDriver.carIdentifier,
-        firstName: apiDriver.firstName,
-        lastName: apiDriver.lastName,
-        email: apiDriver.email,
-        phoneNumber: apiDriver.phoneNumber,
-        isVerified: apiDriver.isVerified,
-        isAvailable: apiDriver.isAvailable,
-        completedRides: apiDriver.completedRides,
-        averageRating: apiDriver.averageRating,
-        dateAdded: new Date(),
-        lastUpdatedAt: new Date(),
-        currentLatitude: null,
-        currentLongitude: null,
-      });
+
+      if (response.data && response.data.driver) {
+        // If driver is present in response, save it
+        const apiDriver = response.data.driver;
+        setDriverData({
+          identifier: apiDriver.identifier,
+          carIdentifier: apiDriver.carIdentifier,
+          firstName: apiDriver.firstName,
+          lastName: apiDriver.lastName,
+          email: apiDriver.email,
+          phoneNumber: apiDriver.phoneNumber,
+          isVerified: apiDriver.isVerified,
+          isAvailable: apiDriver.isAvailable,
+          completedRides: apiDriver.completedRides,
+          averageRating: apiDriver.averageRating,
+          dateAdded: new Date(),
+          lastUpdatedAt: new Date(),
+          currentLatitude: null,
+          currentLongitude: null,
+        });
+      } else {
+        // Fetch driver profile using the token and save it
+        try {
+          const token = response.data!.jwtToken;
+          const profileResponse = await driverAuthAPI.getDriverProfile(token);
+          if (profileResponse && profileResponse.data) {
+            setDriverData({
+              ...profileResponse.data,
+              dateAdded: new Date(),
+              lastUpdatedAt: new Date(),
+              currentLatitude: null,
+              currentLongitude: null,
+            });
+          }
+        } catch (profileError) {
+          setNotification({
+            type: 'error',
+            message: 'Login succeeded but failed to load driver profile.',
+            isVisible: true
+          });
+          setIsLoading(false);
+          return;
+        }
+      }
 
       setNotification({
         type: 'success',

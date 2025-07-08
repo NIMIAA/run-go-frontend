@@ -7,6 +7,11 @@ export const navRoutes = [
         icon: Squares2X2Icon,
     },
     {
+        label: "My Wallet",
+        path: "/user_dashboard/dashboard/wallet",
+        icon: CreditCardIcon,
+    },
+    {
         label: "Rides",
         path: "/user_dashboard/dashboard/rides",
         icon: TruckIcon,
