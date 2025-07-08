@@ -33,9 +33,9 @@ export const driverNavRoutes = [
         icon: CreditCardIcon,
     },
     {
-        label: "Location",
-        path: "/driver_dashboard/location",
-        icon: MapPinIcon,
+        label: "Car",
+        path: "/driver_dashboard/car",
+        icon: TruckIcon,
     },
     {
         label: "Profile",

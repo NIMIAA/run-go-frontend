@@ -97,6 +97,70 @@ export default function DriverProfilePage() {
         );
     }
 
+    // CarTypeUpdate component
+    const carTypes = [
+        { value: "keke", label: "Keke" },
+        { value: "shuttle", label: "Shuttle" },
+        { value: "camry", label: "Camry" },
+        { value: "sienna", label: "Sienna" },
+    ];
+
+    function CarTypeUpdate({ carIdentifier, initialType }: { carIdentifier: string; initialType?: string }) {
+        const [carType, setCarType] = useState(initialType || "");
+        const [loading, setLoading] = useState(false);
+        const [success, setSuccess] = useState<string | null>(null);
+        const [error, setError] = useState<string | null>(null);
+
+        const handleSubmit = async (e: React.FormEvent) => {
+            e.preventDefault();
+            setLoading(true);
+            setSuccess(null);
+            setError(null);
+            try {
+                const res = await fetch(`http://localhost:5000/cars/${carIdentifier}/type`, {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ carType }),
+                });
+                if (!res.ok) {
+                    const data = await res.json().catch(() => ({}));
+                    throw new Error(data.message || "Failed to update car type");
+                }
+                setSuccess("Car type updated successfully!");
+            } catch (err: any) {
+                setError(err.message || "Error updating car type");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        return (
+            <form onSubmit={handleSubmit} className="mt-8 mb-4 p-4 bg-gray-50 rounded-lg border">
+                <label className="block text-sm font-medium text-gray-700 mb-2">Car Type</label>
+                <select
+                    value={carType}
+                    onChange={(e) => setCarType(e.target.value)}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent mb-2"
+                    required
+                >
+                    <option value="">Select car type</option>
+                    {carTypes.map((type) => (
+                        <option key={type.value} value={type.value}>{type.label}</option>
+                    ))}
+                </select>
+                <button
+                    type="submit"
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors mt-2"
+                    disabled={loading}
+                >
+                    {loading ? "Updating..." : "Update Car Type"}
+                </button>
+                {success && <p className="text-green-600 mt-2">{success}</p>}
+                {error && <p className="text-red-600 mt-2">{error}</p>}
+            </form>
+        );
+    }
+
     return (
         <div className="mx-8">
             {/* Header */}
@@ -299,6 +363,9 @@ export default function DriverProfilePage() {
                     )}
                 </div>
 
+                {/* Car Type Update Section */}
+                {driver && <CarTypeUpdate carIdentifier={driver.carIdentifier} />}
+
                 {/* Driver Statistics */}
                 <div className="bg-white rounded-lg shadow-md p-6 mt-6">
                     <h3 className="text-xl font-semibold mb-6">Driver Statistics</h3>
@@ -345,8 +412,8 @@ export default function DriverProfilePage() {
                                 </p>
                             </div>
                             <span className={`px-3 py-1 rounded-full text-sm font-medium ${driver.isVerified
-                                    ? 'bg-green-100 text-green-800'
-                                    : 'bg-yellow-100 text-yellow-800'
+                                ? 'bg-green-100 text-green-800'
+                                : 'bg-yellow-100 text-yellow-800'
                                 }`}>
                                 {driver.isVerified ? 'Verified' : 'Pending'}
                             </span>

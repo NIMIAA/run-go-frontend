@@ -29,30 +29,6 @@ const MapComponent = dynamic(() => import('./MapComponent'), {
   )
 });
 
-// Alphabetically sorted locations
-const locations = [
-  "ACEGID (Along Engr Faculty)",
-  "BMS",
-  "CCBR",
-  "Container",
-  "Engineering Faculty",
-  "Engineering Hostel",
-  "Event Center",
-  "Extension Region",
-  "Faculty of Humanities and Social Sciences",
-  "Female Hostel First Gate",
-  "Guest Hostel",
-  "Health Center",
-  "Library Region",
-  "Lecture Rooms Regions",
-  "Manna Palace Cafeteria",
-  "Number Bukateria",
-  "Prophet Moses Hall Region",
-  "Staff Quarters",
-  "Tourism Village Region",
-  "University Auditorium Region"
-];
-
 // Transport vehicles data
 const vehicles = [
   {
@@ -80,6 +56,73 @@ const vehicles = [
     description: "Group transportation"
   }
 ];
+
+// Add LocationDropdowns component
+const LocationDropdowns: React.FC<{
+  pickup: string;
+  setPickup: (id: string) => void;
+  dropoff: string;
+  setDropoff: (id: string) => void;
+}> = ({ pickup, setPickup, dropoff, setDropoff }) => {
+  const [locations, setLocations] = useState<{ id: string; location: string }[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setLoading(true);
+    fetch('http://localhost:5000/v1/location')
+      .then((res) => {
+        if (!res.ok) throw new Error('Failed to fetch locations');
+        return res.json();
+      })
+      .then((data) => {
+        setLocations(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message || 'Error loading locations');
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <div>Loading locations...</div>;
+  if (error) return <div style={{ color: 'red' }}>Error: {error}</div>;
+
+  return (
+    <>
+      <div className="w-full">
+        <label className="block text-sm font-medium text-gray-700 mb-2">Pickup Location</label>
+        <select
+          value={pickup}
+          onChange={(e) => setPickup(e.target.value)}
+          className="px-4 py-3 rounded w-full border-2 border-gray-300 focus:outline-none focus:border-blue-500"
+        >
+          <option value="">Select pickup location</option>
+          {locations
+            .filter((loc) => loc.id !== dropoff)
+            .map((loc) => (
+              <option key={loc.id} value={loc.id}>{loc.location}</option>
+            ))}
+        </select>
+      </div>
+      <div className="w-full mt-4">
+        <label className="block text-sm font-medium text-gray-700 mb-2">Dropoff Location</label>
+        <select
+          value={dropoff}
+          onChange={(e) => setDropoff(e.target.value)}
+          className="px-4 py-3 rounded w-full border-2 border-gray-300 focus:outline-none focus:border-blue-500"
+        >
+          <option value="">Select dropoff location</option>
+          {locations
+            .filter((loc) => loc.id !== pickup)
+            .map((loc) => (
+              <option key={loc.id} value={loc.id}>{loc.location}</option>
+            ))}
+        </select>
+      </div>
+    </>
+  );
+};
 
 export default function RidesPage() {
   const [isOpen, setIsOpen] = useState(false);
@@ -303,39 +346,7 @@ export default function RidesPage() {
                     {step === 1 && (
                       <>
                         <div className="space-y-4">
-                          {/* Pickup Location Dropdown */}
-                          <div className="w-full">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Pickup Location</label>
-                            <select
-                              value={pickup}
-                              onChange={(e) => setPickup(e.target.value)}
-                              className="px-4 py-3 rounded w-full border-2 border-gray-300 focus:outline-none focus:border-blue-500"
-                            >
-                              <option value="">Select pickup location</option>
-                              {locations.map((location, index) => (
-                                <option key={index} value={location}>
-                                  {location}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
-
-                          {/* Dropoff Location Dropdown */}
-                          <div className="w-full">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Dropoff Location</label>
-                            <select
-                              value={dropoff}
-                              onChange={(e) => setDropoff(e.target.value)}
-                              className="px-4 py-3 rounded w-full border-2 border-gray-300 focus:outline-none focus:border-blue-500"
-                            >
-                              <option value="">Select dropoff location</option>
-                              {locations.map((location, index) => (
-                                <option key={index} value={location}>
-                                  {location}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
+                          <LocationDropdowns pickup={pickup} setPickup={setPickup} dropoff={dropoff} setDropoff={setDropoff} />
                         </div>
                         <p className="text-red-500 text-xs mt-2">{error}</p>
                         <div className="mt-4">
