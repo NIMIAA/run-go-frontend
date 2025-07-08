@@ -16,6 +16,7 @@ import {
 import ProfileAvatar from "@/app/components/profile/ProfileAvatar";
 import Link from "next/link";
 import { DriverSocketProvider, useDriverSocket } from "@/app/context/DriverSocketContext";
+import { useRouter } from "next/navigation";
 
 function RideRequestModal() {
     const { currentRideRequest, sendRideResponse, setCurrentRideRequest } = useDriverSocket();
@@ -54,6 +55,7 @@ function DashboardContent() {
     const [avatarDropdownOpen, setAvatarDropdownOpen] = useState(false);
     const avatarDropdownTimeout = useRef<NodeJS.Timeout | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const router = useRouter();
 
     useEffect(() => {
         const driverData = getDriverData();
@@ -62,35 +64,71 @@ function DashboardContent() {
             setDriver(driverData);
             setIsLoading(false);
         } else {
-            // Try to fetch driver profile if JWT token exists
-            const token = getDriverAuthToken();
+            const token = localStorage.getItem('driverJwtToken');
             if (token) {
-                driverAuthAPI.getDriverProfile(token)
-                    .then((profileResponse: any) => {
-                        if (profileResponse && profileResponse.data) {
-                            setDriverData({
-                                ...profileResponse.data,
-                                dateAdded: new Date(),
-                                lastUpdatedAt: new Date(),
-                                currentLatitude: null,
-                                currentLongitude: null,
-                            });
-                            setDriver({
-                                ...profileResponse.data,
-                                dateAdded: new Date(),
-                                lastUpdatedAt: new Date(),
-                                currentLatitude: null,
-                                currentLongitude: null,
-                            });
-                        } else {
-                            setError("Driver profile not found.");
+                fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000'}/v1/driver/auth/profile`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                })
+                    .then(async (res) => {
+                        if (res.status === 401) {
+                            setError('Session expired. Please log in again.');
+                            setIsLoading(false);
+                            setTimeout(() => router.push('/authentication/drivers-login'), 2000);
+                            return;
                         }
+                        if (res.status === 404) {
+                            setError('Driver profile not found.');
+                            setIsLoading(false);
+                            return;
+                        }
+                        if (!res.ok) {
+                            setError('Failed to load driver profile.');
+                            setIsLoading(false);
+                            return;
+                        }
+                        const data = await res.json();
+                        setDriverData({
+                            identifier: data.identifier,
+                            carIdentifier: data.carIdentifier,
+                            firstName: data.firstName,
+                            lastName: data.lastName,
+                            email: data.email,
+                            phoneNumber: data.phoneNumber,
+                            isVerified: data.isVerified,
+                            isAvailable: data.isAvailable,
+                            completedRides: data.completedRides,
+                            averageRating: data.averageRating,
+                            dateAdded: new Date(),
+                            lastUpdatedAt: new Date(),
+                            currentLatitude: null,
+                            currentLongitude: null,
+                        });
+                        setDriver({
+                            identifier: data.identifier,
+                            carIdentifier: data.carIdentifier,
+                            firstName: data.firstName,
+                            lastName: data.lastName,
+                            email: data.email,
+                            phoneNumber: data.phoneNumber,
+                            isVerified: data.isVerified,
+                            isAvailable: data.isAvailable,
+                            completedRides: data.completedRides,
+                            averageRating: data.averageRating,
+                            dateAdded: new Date(),
+                            lastUpdatedAt: new Date(),
+                            currentLatitude: null,
+                            currentLongitude: null,
+                        });
                         setIsLoading(false);
                     })
-                    .catch((err: any) => {
-                        setError("Failed to load driver profile.");
+                    .catch((err) => {
+                        setError('Failed to load driver profile.');
                         setIsLoading(false);
-                        console.error("Error fetching driver profile:", err);
+                        console.error('Error fetching driver profile:', err);
                     });
             } else {
                 setIsLoading(false);
