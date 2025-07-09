@@ -74,7 +74,7 @@ const validateWalletBalance = async (rideFare: number) => {
     console.log('Validating wallet balance for fare:', rideFare);
     const token = getAuthToken();
     if (!token) {
-      throw new Error('No authentication token found');
+      throw new Error('Authentication required. Please log in again.');
     }
 
     const response = await fetch(`http://localhost:5000/v1/booking/validate-wallet-balance?rideFare=${rideFare}`, {
@@ -102,36 +102,54 @@ const validateWalletBalance = async (rideFare: number) => {
   }
 };
 
-const createBooking = async (bookingData: any) => {
+const requestRide = async (rideData: any) => {
   try {
-    console.log('Creating booking with data:', bookingData);
+    console.log('Requesting ride with data:', rideData);
     const token = getAuthToken();
     if (!token) {
-      throw new Error('No authentication token found');
+      throw new Error('Authentication required. Please log in again.');
     }
 
-    const response = await fetch('http://localhost:5000/v1/booking/createBooking', {
+    const response = await fetch('http://localhost:5000/v1/booking/request-ride', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
       },
-      body: JSON.stringify(bookingData),
+      body: JSON.stringify(rideData),
     });
 
-    console.log('Create booking API response status:', response.status);
+    console.log('Request ride API response status:', response.status);
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Create booking API error response:', errorText);
-      throw new Error(`Failed to create booking: ${response.status} ${response.statusText}`);
+      console.error('=== REQUEST RIDE API ERROR ===');
+      console.error('Status:', response.status, response.statusText);
+      console.error('Error response:', errorText);
+      console.error('Request body that was sent:', rideData);
+      console.error('=== END ERROR DEBUG ===');
+
+      // Try to parse error response as JSON for better error messages
+      try {
+        const errorJson = JSON.parse(errorText);
+        if (errorJson.message) {
+          throw new Error(`Request failed: ${errorJson.message}`);
+        } else if (errorJson.error) {
+          throw new Error(`Request failed: ${errorJson.error}`);
+        } else {
+          throw new Error(`Request failed: ${response.status} ${response.statusText}`);
+        }
+      } catch (parseError) {
+        // If error response is not JSON, use the raw text
+        throw new Error(`Request failed: ${response.status} ${response.statusText} - ${errorText}`);
+      }
     }
 
     const data = await response.json();
-    console.log('Create booking API response data:', data);
+    console.log('Request ride API response data:', data);
     return { success: true, data };
   } catch (error) {
-    console.error('Error creating booking:', error);
+    console.error('Error requesting ride:', error);
     return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
   }
 };
@@ -505,21 +523,59 @@ export default function RidesPage() {
           return;
         }
 
-        // Step 3: Create booking
+        // Step 3: Send ride request to driver
         setBookingStatus("processing");
-        const bookingData = {
+
+        // Verify JWT token exists
+        const token = getAuthToken();
+        if (!token) {
+          setWalletError('Authentication required. Please log in again.');
+          setIsProcessingPayment(false);
+          setBookingStatus("failed");
+          return;
+        }
+
+        const rideData = {
           driverIdentifier: selectedDriver?.identifier,
           pickupLocation: pickup,
-          destination: dropoff,
-          amountPaid: fare,
-          paymentMethod: 'Wallet',
-          paymentReferenceNumber: `REF-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+          destination: dropoff, // Changed from dropoffLocation to destination
+          estimatedAmount: Number(fare) // Ensure it's a number, not string
         };
-        console.log('Creating booking with data:', bookingData);
 
-        const bookingResult = await createBooking(bookingData);
-        if (!bookingResult.success) {
-          setWalletError(bookingResult.error || 'Failed to create booking');
+        // Validate all required fields (excluding userIdentifier as it's extracted from JWT)
+        const validationErrors = [];
+        if (!rideData.driverIdentifier) validationErrors.push('driverIdentifier is missing');
+        if (!rideData.pickupLocation) validationErrors.push('pickupLocation is missing');
+        if (!rideData.destination) validationErrors.push('destination is missing');
+        if (typeof rideData.estimatedAmount !== 'number' || isNaN(rideData.estimatedAmount)) {
+          validationErrors.push('estimatedAmount must be a valid number');
+        }
+
+        if (validationErrors.length > 0) {
+          const errorMessage = `Validation failed: ${validationErrors.join(', ')}`;
+          console.error('=== VALIDATION ERRORS ===');
+          console.error(errorMessage);
+          console.error('Request data:', rideData);
+          console.error('=== END VALIDATION ERRORS ===');
+          setWalletError(errorMessage);
+          setIsProcessingPayment(false);
+          setBookingStatus("failed");
+          return;
+        }
+
+        console.log('=== RIDE REQUEST DEBUG ===');
+        console.log('JWT Token exists:', !!token);
+        console.log('Selected driver:', selectedDriver);
+        console.log('Pickup location:', pickup);
+        console.log('Dropoff location:', dropoff);
+        console.log('Fare (original):', fare, 'Type:', typeof fare);
+        console.log('Estimated amount (converted):', Number(fare), 'Type:', typeof Number(fare));
+        console.log('Final request body (userIdentifier extracted from JWT):', rideData);
+        console.log('=== END DEBUG ===');
+
+        const rideResult = await requestRide(rideData);
+        if (!rideResult.success) {
+          setWalletError(rideResult.error || 'Failed to request ride');
           setIsProcessingPayment(false);
           setBookingStatus("failed");
           return;
@@ -808,7 +864,7 @@ export default function RidesPage() {
                               onClick={() => setStep(4)}
                               disabled={paymentMethod === "wallet" && (!walletValidationData || !walletValidationData.canProceed)}
                             >
-                              {bookingStatus === "processing" ? "Processing..." : "Confirm Booking"}
+                              {bookingStatus === "processing" ? "Processing..." : "Request Ride"}
                             </Button>
                           </div>
                         )}
@@ -818,8 +874,8 @@ export default function RidesPage() {
                     {step === 4 && (
                       <>
                         <div className="text-center py-4">
-                          <p className="text-xl font-bold text-green-600 mb-2">Thank you!</p>
-                          <p className="text-gray-500 text-sm mb-4">Your ride has been successfully booked.</p>
+                          <p className="text-xl font-bold text-green-600 mb-2">Ride Request Sent!</p>
+                          <p className="text-gray-500 text-sm mb-4">Your ride request has been sent to the driver. They will receive an email and dashboard notification.</p>
                           <Button
                             className="inline-flex items-center gap-2 rounded-md bg-gray-700 px-6 py-2 text-sm font-semibold text-white shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-gray-600 data-open:bg-gray-700"
                             onClick={close}
