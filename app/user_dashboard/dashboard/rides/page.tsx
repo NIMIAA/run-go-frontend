@@ -11,10 +11,19 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
 } from '@heroicons/react/16/solid'
-import { getUserData, User } from "@/app/utils/auth";
+import { getUserData, User, getAuthToken } from "@/app/utils/auth";
 import { getUserProfile } from "@/app/utils/api";
 import ProfileAvatar from "@/app/components/profile/ProfileAvatar";
 import dynamic from 'next/dynamic';
+
+// Types
+interface Driver {
+  identifier: string;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  carIdentifier?: string;
+}
 
 // Dynamically import the map component to avoid SSR issues
 const MapComponent = dynamic(() => import('./MapComponent'), {
@@ -28,6 +37,104 @@ const MapComponent = dynamic(() => import('./MapComponent'), {
     </div>
   )
 });
+
+// API functions for wallet payment flow
+const getRidePrice = async (pickupLocation: string, dropoffLocation: string) => {
+  try {
+    console.log('Fetching ride price for:', pickupLocation, 'to', dropoffLocation);
+    // Encode location names for URL
+    const encodedPickup = encodeURIComponent(pickupLocation);
+    const encodedDropoff = encodeURIComponent(dropoffLocation);
+    const response = await fetch(`http://localhost:5000/v1/location/price/${encodedPickup}/${encodedDropoff}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    console.log('Price API response status:', response.status);
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Price API error response:', errorText);
+      throw new Error(`Failed to fetch ride price: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    console.log('Price API response data:', data);
+    return { success: true, data };
+  } catch (error) {
+    console.error('Error fetching ride price:', error);
+    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+  }
+};
+
+const validateWalletBalance = async (rideFare: number) => {
+  try {
+    console.log('Validating wallet balance for fare:', rideFare);
+    const token = getAuthToken();
+    if (!token) {
+      throw new Error('No authentication token found');
+    }
+
+    const response = await fetch(`http://localhost:5000/v1/booking/validate-wallet-balance?rideFare=${rideFare}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    console.log('Wallet validation API response status:', response.status);
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Wallet validation API error response:', errorText);
+      throw new Error(`Failed to validate wallet balance: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    console.log('Wallet validation API response data:', data);
+    return { success: true, data };
+  } catch (error) {
+    console.error('Error validating wallet balance:', error);
+    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+  }
+};
+
+const createBooking = async (bookingData: any) => {
+  try {
+    console.log('Creating booking with data:', bookingData);
+    const token = getAuthToken();
+    if (!token) {
+      throw new Error('No authentication token found');
+    }
+
+    const response = await fetch('http://localhost:5000/v1/booking/createBooking', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(bookingData),
+    });
+
+    console.log('Create booking API response status:', response.status);
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Create booking API error response:', errorText);
+      throw new Error(`Failed to create booking: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    console.log('Create booking API response data:', data);
+    return { success: true, data };
+  } catch (error) {
+    console.error('Error creating booking:', error);
+    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+  }
+};
 
 // Transport vehicles data
 const vehicles = [
@@ -60,9 +167,9 @@ const vehicles = [
 // Add LocationDropdowns component
 const LocationDropdowns: React.FC<{
   pickup: string;
-  setPickup: (id: string) => void;
+  setPickup: (locationName: string) => void;
   dropoff: string;
-  setDropoff: (id: string) => void;
+  setDropoff: (locationName: string) => void;
 }> = ({ pickup, setPickup, dropoff, setDropoff }) => {
   const [locations, setLocations] = useState<{ id: string; location: string }[]>([]);
   const [loading, setLoading] = useState(true);
@@ -70,16 +177,28 @@ const LocationDropdowns: React.FC<{
 
   useEffect(() => {
     setLoading(true);
-    fetch('http://localhost:5000/v1/location')
+    console.log('Fetching locations...');
+    fetch('http://localhost:5000/v1/location', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
       .then((res) => {
-        if (!res.ok) throw new Error('Failed to fetch locations');
+        console.log('Locations API response status:', res.status);
+        if (!res.ok) {
+          console.error('Locations API error status:', res.status, res.statusText);
+          throw new Error(`Failed to fetch locations: ${res.status} ${res.statusText}`);
+        }
         return res.json();
       })
       .then((data) => {
+        console.log('Locations API response data:', data);
         setLocations(data);
         setLoading(false);
       })
       .catch((err) => {
+        console.error('Error fetching locations:', err);
         setError(err.message || 'Error loading locations');
         setLoading(false);
       });
@@ -99,9 +218,9 @@ const LocationDropdowns: React.FC<{
         >
           <option value="">Select pickup location</option>
           {locations
-            .filter((loc) => loc.id !== dropoff)
+            .filter((loc) => loc.location !== dropoff)
             .map((loc) => (
-              <option key={loc.id} value={loc.id}>{loc.location}</option>
+              <option key={loc.id} value={loc.location}>{loc.location}</option>
             ))}
         </select>
       </div>
@@ -114,9 +233,9 @@ const LocationDropdowns: React.FC<{
         >
           <option value="">Select dropoff location</option>
           {locations
-            .filter((loc) => loc.id !== pickup)
+            .filter((loc) => loc.location !== pickup)
             .map((loc) => (
-              <option key={loc.id} value={loc.id}>{loc.location}</option>
+              <option key={loc.id} value={loc.location}>{loc.location}</option>
             ))}
         </select>
       </div>
@@ -128,10 +247,10 @@ const LocationDropdowns: React.FC<{
 const AvailableDriversList: React.FC<{
   pickup: string;
   dropoff: string;
-  onSelect: (driver: any) => void;
+  onSelect: (driver: Driver) => void;
   selectedDriverId?: string;
 }> = ({ pickup, dropoff, onSelect, selectedDriverId }) => {
-  const [drivers, setDrivers] = useState<any[]>([]);
+  const [drivers, setDrivers] = useState<Driver[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -140,18 +259,34 @@ const AvailableDriversList: React.FC<{
     setLoading(true);
     setError(null);
     setDrivers([]);
+    console.log('Fetching available drivers for pickup:', pickup, 'dropoff:', dropoff);
+    // Encode location names for URL parameters
+    const encodedPickup = encodeURIComponent(pickup);
+    const encodedDropoff = encodeURIComponent(dropoff);
     fetch(
-      `http://localhost:5000/v1/booking/available-drivers?pickup=${pickup}&dropoff=${dropoff}`
+      `http://localhost:5000/v1/booking/available-drivers?pickup=${encodedPickup}&dropoff=${encodedDropoff}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
     )
       .then((res) => {
-        if (!res.ok) throw new Error('Failed to fetch available drivers');
+        console.log('Available drivers API response status:', res.status);
+        if (!res.ok) {
+          console.error('Available drivers API error status:', res.status, res.statusText);
+          throw new Error(`Failed to fetch available drivers: ${res.status} ${res.statusText}`);
+        }
         return res.json();
       })
       .then((data) => {
+        console.log('Available drivers API response data:', data);
         setDrivers(data.data || []);
         setLoading(false);
       })
       .catch((err) => {
+        console.error('Error fetching available drivers:', err);
         setError(err.message || 'Error loading drivers');
         setLoading(false);
       });
@@ -215,7 +350,23 @@ export default function RidesPage() {
   const [user, setUser] = useState<User | null>(null);
   const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedDriver, setSelectedDriver] = useState<any | null>(null);
+  const [selectedDriver, setSelectedDriver] = useState<Driver | null>(null);
+  const [rideFare, setRideFare] = useState<number | null>(null);
+  const [isWalletValid, setIsWalletValid] = useState<boolean | null>(null);
+  const [rideRequestStatus, setRideRequestStatus] = useState<"success" | "failed" | null>(null);
+  const [paymentMethod, setPaymentMethod] = useState<"wallet" | "cash" | null>(null);
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [walletError, setWalletError] = useState<string | null>(null);
+  const [walletValidationData, setWalletValidationData] = useState<{
+    message: string;
+    hasWallet: boolean;
+    hasSufficientFunds: boolean;
+    currentBalance: number;
+    requiredAmount: number;
+    shortfall: number;
+    canProceed: boolean;
+  } | null>(null);
+  const [bookingStatus, setBookingStatus] = useState<"idle" | "processing" | "success" | "failed">("idle");
 
   // Auto-slide functionality
   useEffect(() => {
@@ -259,6 +410,14 @@ export default function RidesPage() {
     setError("");
     setShowLocationInputs(false);
     setSelectedDriver(null);
+    setRideFare(null);
+    setIsWalletValid(null);
+    setRideRequestStatus(null);
+    setPaymentMethod(null);
+    setIsProcessingPayment(false);
+    setWalletError(null);
+    setWalletValidationData(null);
+    setBookingStatus("idle");
   }
 
   const handleNext = () => {
@@ -308,6 +467,78 @@ export default function RidesPage() {
 
     }
 
+  };
+
+  const handlePaymentMethodSelect = async (method: "wallet" | "cash") => {
+    setPaymentMethod(method);
+    setWalletError(null);
+
+    if (method === "wallet") {
+      setIsProcessingPayment(true);
+
+      try {
+        // Step 1: Get ride fare
+        const priceResult = await getRidePrice(pickup, dropoff);
+        if (!priceResult.success) {
+          setWalletError(priceResult.error || 'Failed to get ride price');
+          setIsProcessingPayment(false);
+          return;
+        }
+
+        const fare = priceResult.data.price || priceResult.data.fare || 0;
+        setRideFare(fare);
+
+        // Step 2: Validate wallet balance
+        const walletResult = await validateWalletBalance(fare);
+        if (!walletResult.success) {
+          setWalletError(walletResult.error || 'Failed to validate wallet balance');
+          setIsProcessingPayment(false);
+          return;
+        }
+
+        const walletData = walletResult.data;
+        setWalletValidationData(walletData);
+
+        if (!walletData.canProceed) {
+          setWalletError(walletData.message);
+          setIsProcessingPayment(false);
+          return;
+        }
+
+        // Step 3: Create booking
+        setBookingStatus("processing");
+        const bookingData = {
+          driverIdentifier: selectedDriver?.identifier,
+          pickupLocation: pickup,
+          destination: dropoff,
+          amountPaid: fare,
+          paymentMethod: 'Wallet',
+          paymentReferenceNumber: `REF-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+        };
+        console.log('Creating booking with data:', bookingData);
+
+        const bookingResult = await createBooking(bookingData);
+        if (!bookingResult.success) {
+          setWalletError(bookingResult.error || 'Failed to create booking');
+          setIsProcessingPayment(false);
+          setBookingStatus("failed");
+          return;
+        }
+
+        setRideRequestStatus("success");
+        setBookingStatus("success");
+        setIsProcessingPayment(false);
+        setStep(4);
+
+      } catch (error) {
+        console.error('Error processing wallet payment:', error);
+        setWalletError('An unexpected error occurred. Please try again.');
+        setIsProcessingPayment(false);
+      }
+    } else {
+      // For cash payment, proceed directly to confirmation
+      setStep(4);
+    }
   };
 
   useEffect(() => {
@@ -469,22 +700,118 @@ export default function RidesPage() {
                     {step === 3 && (
                       <>
                         <p className="text-lg font-bold mb-4">Select Payment Method</p>
+
+                        {isProcessingPayment && (
+                          <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                            <div className="flex items-center justify-center">
+                              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mr-3"></div>
+                              <span className="text-blue-800">Processing wallet payment...</span>
+                            </div>
+                          </div>
+                        )}
+
+                        {walletError && (
+                          <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                            <p className="text-red-800 text-sm">{walletError}</p>
+                            {walletError.includes('Insufficient') && (
+                              <button
+                                onClick={() => window.location.href = '/user_dashboard/wallet'}
+                                className="mt-2 text-blue-600 hover:text-blue-800 text-sm underline"
+                              >
+                                Fund Your Wallet
+                              </button>
+                            )}
+                          </div>
+                        )}
+
+                        {rideFare && walletValidationData && (
+                          <div className={`mb-4 p-4 border rounded-lg ${walletValidationData.canProceed
+                            ? 'bg-green-50 border-green-200'
+                            : 'bg-red-50 border-red-200'
+                            }`}>
+                            <p className={`text-sm font-medium ${walletValidationData.canProceed ? 'text-green-800' : 'text-red-800'
+                              }`}>
+                              <strong>Ride Fare:</strong> ₦{rideFare.toLocaleString()}
+                            </p>
+                            <p className={`text-xs mt-1 ${walletValidationData.canProceed ? 'text-green-700' : 'text-red-700'
+                              }`}>
+                              {walletValidationData.message}
+                            </p>
+                            {walletValidationData.canProceed && (
+                              <div className="mt-2 text-xs text-green-600">
+                                <p>Current Balance: ₦{walletValidationData.currentBalance.toLocaleString()}</p>
+                                <p>Required Amount: ₦{walletValidationData.requiredAmount.toLocaleString()}</p>
+                              </div>
+                            )}
+                            {!walletValidationData.canProceed && walletValidationData.shortfall > 0 && (
+                              <div className="mt-2 text-xs text-red-600">
+                                <p>Shortfall: ₦{walletValidationData.shortfall.toLocaleString()}</p>
+                              </div>
+                            )}
+                          </div>
+                        )}
+
                         <div className="space-y-2 mb-4">
-                          <div className="p-4 rounded w-full border-2 border-gray-300 cursor-pointer hover:border-blue-500 hover:bg-gray-50">
-                            My Wallet
-                          </div>
-                          <div className="p-4 rounded w-full border-2 border-gray-300 cursor-pointer hover:border-blue-500 hover:bg-gray-50">
-                            Cash
-                          </div>
-                        </div>
-                        <div className="mt-4">
-                          <Button
-                            className="inline-flex items-center gap-2 rounded-md bg-gray-700 px-6 py-2 text-sm font-semibold text-white shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-gray-600 data-open:bg-gray-700"
-                            onClick={() => setStep(4)}
+                          <button
+                            onClick={() => handlePaymentMethodSelect("wallet")}
+                            disabled={isProcessingPayment}
+                            className={`w-full p-4 rounded border-2 transition-all ${paymentMethod === "wallet"
+                              ? "border-blue-500 bg-blue-50"
+                              : "border-gray-300 hover:border-blue-500 hover:bg-gray-50"
+                              } ${isProcessingPayment ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
                           >
-                            Confirm Booking
-                          </Button>
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center">
+                                <div className="w-6 h-6 mr-3">💰</div>
+                                <div className="text-left">
+                                  <p className="font-medium">My Wallet</p>
+                                  <p className="text-sm text-gray-500">Pay with wallet balance</p>
+                                </div>
+                              </div>
+                              {paymentMethod === "wallet" && (
+                                <div className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
+                                  <div className="w-2 h-2 bg-white rounded-full"></div>
+                                </div>
+                              )}
+                            </div>
+                          </button>
+
+                          <button
+                            onClick={() => handlePaymentMethodSelect("cash")}
+                            disabled={isProcessingPayment}
+                            className={`w-full p-4 rounded border-2 transition-all ${paymentMethod === "cash"
+                              ? "border-blue-500 bg-blue-50"
+                              : "border-gray-300 hover:border-blue-500 hover:bg-gray-50"
+                              } ${isProcessingPayment ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+                          >
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center">
+                                <div className="w-6 h-6 mr-3">💵</div>
+                                <div className="text-left">
+                                  <p className="font-medium">Cash</p>
+                                  <p className="text-sm text-gray-500">Pay with cash</p>
+                                </div>
+                              </div>
+                              {paymentMethod === "cash" && (
+                                <div className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
+                                  <div className="w-2 h-2 bg-white rounded-full"></div>
+                                </div>
+                              )}
+                            </div>
+                          </button>
                         </div>
+
+                        {paymentMethod && !isProcessingPayment && !walletError && (
+                          <div className="mt-4">
+                            <Button
+                              className="inline-flex items-center gap-2 rounded-md bg-gray-700 px-6 py-2 text-sm font-semibold text-white shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-gray-600 data-open:bg-gray-700"
+                              onClick={() => setStep(4)}
+                              disabled={paymentMethod === "wallet" && (!walletValidationData || !walletValidationData.canProceed)}
+                            >
+                              {bookingStatus === "processing" ? "Processing..." : "Confirm Booking"}
+                            </Button>
+                          </div>
+                        )}
                       </>
                     )}
 
