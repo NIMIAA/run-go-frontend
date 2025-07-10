@@ -17,6 +17,7 @@ import ProfileAvatar from "@/app/components/profile/ProfileAvatar";
 import Link from "next/link";
 import { DriverSocketProvider, useDriverSocket } from "@/app/context/DriverSocketContext";
 import { useRouter } from "next/navigation";
+import ActiveRidesTab from "./ActiveRidesTab";
 
 function RideRequestModal() {
     const { currentRideRequest, sendRideResponse, setCurrentRideRequest } = useDriverSocket();
@@ -363,11 +364,7 @@ function DashboardContent() {
                         {/* Active Rides */}
                         <div className="bg-white rounded-lg shadow-md p-6">
                             <h2 className="text-xl font-bold mb-4">Active Rides</h2>
-                            <div className="text-center py-8">
-                                <TruckIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                                <p className="text-gray-600">No active rides at the moment</p>
-                                <p className="text-sm text-gray-500 mt-2">You'll see ride requests here when available</p>
-                            </div>
+                            <ActiveRidesTab />
                         </div>
 
                         {/* Recent Activity */}
