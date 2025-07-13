@@ -46,11 +46,11 @@ export default function About() {
                         <p className="text-xl md:text-2xl mb-8 text-blue-100 leading-relaxed">
                             Connecting Redeemer's University students and staff with reliable drivers across campus
                         </p>
-                        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                            <button className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
+                        <div className="flex flex-col sm:flex-row gap-4 justify-center px-4">
+                            <button className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg w-full sm:w-auto">
                                 Book Your Ride
                             </button>
-                            <button className="border-2 border-white text-white hover:bg-white hover:text-blue-800 font-semibold px-8 py-4 rounded-lg transition-all duration-300">
+                            <button className="border-2 border-white text-white hover:bg-white hover:text-blue-800 font-semibold px-8 py-4 rounded-lg transition-all duration-300 w-full sm:w-auto">
                                 Become a Driver
                             </button>
                         </div>
@@ -71,8 +71,8 @@ export default function About() {
                             </p>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 px-4 lg:px-0">
+                            <div className="bg-white p-6 lg:p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
                                 <div className="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center mb-6">
                                     <AcademicCapIcon className="w-8 h-8 text-blue-600" />
                                 </div>

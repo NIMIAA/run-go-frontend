@@ -21,21 +21,19 @@ export default function Home() {
               hassle
             </p>
 
-            <div className="mt-10 flex flex-col lg:flex-row items-center justify-center gap-x-6">
-              <div className="bg-hover-gold text-white rounded px-6 py-3 w-2/3">
-                <a
-                  href="/authentication/signup"
-                >
-                  Get started
-                </a>
-              </div>
-              <div className="text-sm/6 font-semibold text-white rounded px-6 border-white border py-3 my-4 w-2/3">
-                <a
-                  href="authentication/drivers-signup"
-                >
-                  Become a driver <span aria-hidden="true">→</span>
-                </a>
-              </div>
+            <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 px-4">
+              <a
+                href="/authentication/signup"
+                className="bg-hover-gold text-white rounded-lg px-8 py-4 font-semibold text-lg w-full sm:w-auto text-center transition-all duration-300 hover:bg-yellow-600 transform hover:scale-105 shadow-lg"
+              >
+                Get started
+              </a>
+              <a
+                href="/authentication/drivers-signup"
+                className="text-white font-semibold rounded-lg px-8 py-4 border-2 border-white w-full sm:w-auto text-center transition-all duration-300 hover:bg-white hover:text-gray-900"
+              >
+                Become a driver <span aria-hidden="true">→</span>
+              </a>
             </div>
 
           </div>
@@ -50,51 +48,39 @@ export default function Home() {
               How it works?
             </p>
           </div>
-          <div className="lg:flex justify-center gap-4 p-8 lg:p-2 lg:gap-1 text-center">
-            <div className="lg:flex justify-center p-8 lg:p-3 text-center">
-              <div className="flex justify-center items-center">
-                <div className="flex flex-col justify-center items-center gap-y-4 lg:gap-y-2">
-                  <div className="bg-yellow-500 size-20 p-6 rounded  text-center shadow-xl text-white shadow-yellow-500/30">
-                    <MapPinIcon />
-                  </div>
-                  <p className="mt-2 text-2xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-3xl lg:text-balance">
-                    Select a destination
-                  </p>
-                  <p className="text-lg w-[80%]">
-                    Open the app and enter your destination
-                  </p>
-                </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 px-4 lg:px-8">
+            <div className="flex flex-col items-center text-center p-6 lg:p-8">
+              <div className="bg-yellow-500 w-16 h-16 lg:w-20 lg:h-20 p-4 lg:p-6 rounded-full text-center shadow-xl text-white shadow-yellow-500/30 mb-6">
+                <MapPinIcon className="w-full h-full" />
               </div>
+              <h3 className="text-xl lg:text-2xl font-semibold text-gray-900 mb-4">
+                Select a destination
+              </h3>
+              <p className="text-base lg:text-lg text-gray-600 max-w-xs">
+                Open the app and enter your destination
+              </p>
             </div>
-            <div className="lg:flex justify-center gap-4 p-8 lg:p-3 text-center">
-              <div className="flex justify-center items-center">
-                <div className="flex flex-col justify-center items-center gap-y-4 lg:gap-y-2">
-                  <div className="bg-violet-500 size-20 p-6 rounded  text-center shadow-xl text-white shadow-violet-500/30">
-                    <UsersIcon />
-                  </div>
-                  <p className="mt-2 text-2xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-3xl lg:text-balance">
-                    Choose a driver
-                  </p>
-                  <p className="text-lg w-[80%]">
-                    Meet your driver and enjoy the ride
-                  </p>
-                </div>
+            <div className="flex flex-col items-center text-center p-6 lg:p-8">
+              <div className="bg-violet-500 w-16 h-16 lg:w-20 lg:h-20 p-4 lg:p-6 rounded-full text-center shadow-xl text-white shadow-violet-500/30 mb-6">
+                <UsersIcon className="w-full h-full" />
               </div>
+              <h3 className="text-xl lg:text-2xl font-semibold text-gray-900 mb-4">
+                Choose a driver
+              </h3>
+              <p className="text-base lg:text-lg text-gray-600 max-w-xs">
+                Meet your driver and enjoy the ride
+              </p>
             </div>
-            <div className="lg:flex justify-center gap-4 p-8 lg:p-3 text-center">
-              <div className="flex justify-center items-center">
-                <div className="flex flex-col justify-center items-center gap-y-4 lg:gap-y-2">
-                  <div className="bg-lightBlue-500 size-20 p-6 rounded  text-center shadow-xl text-white shadow-lightBlue-500/30">
-                    <FaceSmileIcon />
-                  </div>
-                  <p className="mt-2 text-2xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-3xl lg:text-balance">
-                    Enjoy your ride
-                  </p>
-                  <p className="text-lg w-[80%]">
-                    Meet your driver and enjoy the ride
-                  </p>
-                </div>
+            <div className="flex flex-col items-center text-center p-6 lg:p-8">
+              <div className="bg-blue-500 w-16 h-16 lg:w-20 lg:h-20 p-4 lg:p-6 rounded-full text-center shadow-xl text-white shadow-blue-500/30 mb-6">
+                <FaceSmileIcon className="w-full h-full" />
               </div>
+              <h3 className="text-xl lg:text-2xl font-semibold text-gray-900 mb-4">
+                Enjoy your ride
+              </h3>
+              <p className="text-base lg:text-lg text-gray-600 max-w-xs">
+                Meet your driver and enjoy the ride
+              </p>
             </div>
           </div>
         </div>
@@ -107,67 +93,67 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="xl:grid grid-rows-2 grid-flow-col justify-center gap-8 lg:gap-x-20 p-8">
-            <div className="md:flex justify-center items-center gap-4 mb-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 px-4 lg:px-8">
+            <div className="flex flex-col lg:flex-row items-center gap-6 p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
               <Image
                 src="/images/reliable.jpg"
                 alt="Reliable"
-                width={300}
-                height={300}
-                className="rounded-xl"
+                width={200}
+                height={200}
+                className="rounded-xl w-48 h-48 object-cover"
               />
-              <div className="my-2">
-                <p className="mt-2 text-2xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-3xl lg:text-balance">Fast and reliable</p>
-                <p className="text-md leading-1 mt-2 text-justify">
+              <div className="text-center lg:text-left">
+                <h3 className="text-xl lg:text-2xl font-semibold text-gray-900 mb-3">Fast and reliable</h3>
+                <p className="text-base lg:text-lg text-gray-600">
                   Easily book a ride with just a few taps. No more waiting—get a
                   ride within minutes, right from your campus.
                 </p>
               </div>
             </div>
-            <div className="md:flex justify-center items-center gap-4 mb-8">
+            <div className="flex flex-col lg:flex-row items-center gap-6 p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
               <Image
                 src="/images/affordable.jpg"
-                alt="Reliable"
-                width={300}
-                height={300}
-                className="rounded-xl"
+                alt="Affordable"
+                width={200}
+                height={200}
+                className="rounded-xl w-48 h-48 object-cover"
               />
-              <div className="my-2">
-                <p className="mt-2 text-2xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-3xl lg:text-balance">Affordable Rides</p>
-                <p className="text-md leading-1 mt-2 text-justify">
+              <div className="text-center lg:text-left">
+                <h3 className="text-xl lg:text-2xl font-semibold text-gray-900 mb-3">Affordable Rides</h3>
+                <p className="text-base lg:text-lg text-gray-600">
                   Student-friendly pricing with no hidden charges. Enjoy
                   cost-effective rides across campus.
                 </p>
               </div>
             </div>
-            <div className="md:flex justify-center items-center gap-4 mb-8">
+            <div className="flex flex-col lg:flex-row items-center gap-6 p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
               <Image
                 src="/images/secure.jpg"
-                alt="Reliable"
-                width={300}
-                height={300}
-                className="rounded-xl"
+                alt="Secure"
+                width={200}
+                height={200}
+                className="rounded-xl w-48 h-48 object-cover"
               />
-              <div className="my-2">
-                <p className="mt-2 text-2xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-3xl lg:text-balance">Safe & Secure</p>
-                <p className="text-md leading-1 mt-2 text-justify">
+              <div className="text-center lg:text-left">
+                <h3 className="text-xl lg:text-2xl font-semibold text-gray-900 mb-3">Safe & Secure</h3>
+                <p className="text-base lg:text-lg text-gray-600">
                   All drivers are verified and trained to ensure a safe ride.
                   Real-time tracking and emergency support provide extra
                   security.
                 </p>
               </div>
             </div>
-            <div className="md:flex justify-center items-center gap-4 mb-8">
+            <div className="flex flex-col lg:flex-row items-center gap-6 p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
               <Image
                 src="/images/wide.jpg"
-                alt="Reliable"
-                width={300}
-                height={300}
-                className="rounded-xl"
+                alt="Wide Coverage"
+                width={200}
+                height={200}
+                className="rounded-xl w-48 h-48 object-cover"
               />
-              <div className="my-2">
-                <p className="mt-2 text-2xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-3xl lg:text-balance">Campus-Wide Coverage</p>
-                <p className="text-md leading-1 mt-2 text-justify">
+              <div className="text-center lg:text-left">
+                <h3 className="text-xl lg:text-2xl font-semibold text-gray-900 mb-3">Campus-Wide Coverage</h3>
+                <p className="text-base lg:text-lg text-gray-600">
                   Rides available at all key locations, including hostels,
                   lecture halls, and libraries. Never worry about getting around
                   campus again!

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Navbar from "../components/nav";
 import Footer from "../components/app/footer";
+import Map from "../components/Map";
 import {
     EnvelopeIcon,
     PhoneIcon,
@@ -103,7 +104,7 @@ export default function Contact() {
                             </p>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 px-4 lg:px-0">
                             {/* General Support */}
                             <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-8 rounded-xl border border-blue-200">
                                 <div className="w-16 h-16 bg-blue-600 rounded-lg flex items-center justify-center mb-6">
@@ -209,13 +210,7 @@ export default function Contact() {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="bg-gray-200 rounded-lg h-64 flex items-center justify-center">
-                                    <div className="text-center text-gray-500">
-                                        <MapPinIcon className="w-16 h-16 mx-auto mb-4" />
-                                        <p>Map placeholder</p>
-                                        <p className="text-sm">Interactive map coming soon</p>
-                                    </div>
-                                </div>
+                                <Map />
                             </div>
                         </div>
                     </div>
@@ -268,7 +263,7 @@ export default function Contact() {
                         </div>
 
                         <div className="max-w-2xl mx-auto">
-                            <form className="bg-white p-8 rounded-xl shadow-lg">
+                            <form className="bg-white p-6 lg:p-8 rounded-xl shadow-lg">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-2">
