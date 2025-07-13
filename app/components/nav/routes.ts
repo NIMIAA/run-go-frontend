@@ -1,5 +1,9 @@
 export const routes = [
   {
+    label: "home",
+    path: "/",
+  },
+  {
     label: "ride",
     path: "/authentication/login",
   },
@@ -9,10 +13,10 @@ export const routes = [
   },
   {
     label: "about",
-    path: "/",
+    path: "/about",
   },
   {
     label: "contact",
-    path: "/",
+    path: "/contact",
   },
 ];

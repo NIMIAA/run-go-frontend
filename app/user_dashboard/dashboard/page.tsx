@@ -105,7 +105,7 @@ export default function DashboardPage() {
     // Tab switching logic
     if (tab === "wallet") {
         return (
-            <div className="mx-8">
+            <div className="mx-2 sm:mx-4 md:mx-6 lg:mx-8">
                 {showPaymentSuccess && (
                     <div className="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded flex items-center justify-center">
                         Payment successful! Your wallet has been updated.
@@ -117,15 +117,39 @@ export default function DashboardPage() {
     }
 
     return (
-        <div className="mx-8">
-            <div className="flex flex-row justify-between items-center">
-                <div className="flex flex-col justify-center items-start mt-8">
-                    <p className="text-4xl font-bold">Welcome, {getUserDisplayName()}</p>
-                    <p className="text-gray-500 mt-2">Here&apos;s what&apos;s happening with your account today!</p>
+        <div className="mx-2 sm:mx-4 md:mx-6 lg:mx-8">
+            {/* Top Bar - Mobile: Profile at hamburger level */}
+            <div className="lg:hidden flex justify-between items-center mt-4 mb-6">
+                <div className="flex flex-col">
+                    <h1 className="text-2xl font-bold text-gray-900">
+                        Welcome, {getUserDisplayName()}
+                    </h1>
+                    <p className="text-sm text-gray-500 mt-1">
+                        Here&apos;s what&apos;s happening with your account today!
+                    </p>
+                </div>
+                <div className="flex items-center">
+                    <ProfileAvatar
+                        user={user}
+                        profileImageUrl={profileImageUrl}
+                        size="md"
+                    />
+                </div>
+            </div>
+
+            {/* Desktop Header */}
+            <div className="hidden lg:flex flex-row justify-between items-center mt-8">
+                <div className="flex flex-col justify-center items-start">
+                    <h1 className="text-4xl font-bold text-gray-900">
+                        Welcome, {getUserDisplayName()}
+                    </h1>
+                    <p className="text-base text-gray-500 mt-2">
+                        Here&apos;s what&apos;s happening with your account today!
+                    </p>
                 </div>
 
-                {/* Profile Section */}
-                <div className="mt-8 relative group">
+                {/* Desktop Profile Section */}
+                <div className="relative group">
                     <div className="flex flex-row items-center justify-between gap-3 bg-white rounded-lg shadow-md p-3 border border-gray-200 hover:shadow-lg transition-shadow">
                         <div className="flex flex-row items-center gap-3">
                             {/* Profile Picture */}
@@ -136,15 +160,15 @@ export default function DashboardPage() {
                             />
 
                             {/* User Info */}
-                            <div className="flex flex-col items-start justify-center">
-                                <p className="font-semibold text-gray-800">
+                            <div className="flex flex-col items-start justify-center min-w-0">
+                                <p className="font-semibold text-gray-800 text-base truncate">
                                     {isLoading ? "Loading..." : getUserDisplayName()}
                                 </p>
-                                <p className="text-xs text-gray-500">
+                                <p className="text-xs text-gray-500 truncate">
                                     {isLoading ? "loading@email.com" : user?.email}
                                 </p>
                                 {user?.isStudent && (
-                                    <p className="text-xs text-blue-600 font-medium">
+                                    <p className="text-xs text-blue-600 font-medium truncate">
                                         Student • {user.matricNumber}
                                     </p>
                                 )}
@@ -179,93 +203,92 @@ export default function DashboardPage() {
                     </div>
                 </div>
             </div>
-            <div className="grid grid-cols-3 gap-4 mt-8">
-                <div className="col-span-2 grid grid-rows-5 gap-4 mt-8">
-                    <div className="row-span-1 flex flex-row gap-4">
-                        <div className="bg-white shadow-md rounded-lg p-4 w-1/2">
-                            <h2 className="text-xl font-bold">Upcoming Rides</h2>
-                            <p>No upcoming rides scheduled.</p>
-                        </div>
-                        <div className="bg-white shadow-md rounded-lg p-4 w-1/2">
-                            <h2 className="text-xl font-bold">Ride History</h2>
-                            <p>No history.</p>
-                        </div>
-                    </div>
-                    <div className="row-span-4 flex flex-row gap-4">
-                        <div className="bg-white shadow-md rounded-lg p-4 w-full flex flex-col items-center justify-center">
-                            <div className="my-2 relative bg-[url(/images/users-sign-up.jpg)] bg-cover bg-center bg-no-repeat w-full rounded-lg border h-full flex items-center justify-center">
-                                <div className="absolute inset-0 bg-gradient-to-br from-[#191970]/40 via-[#191970]/30 to-[#DAA520]/30 rounded-lg"></div>
-                                <Link href="/user_dashboard/dashboard/rides" className="relative z-10">
-                                    <button className="bg-gradient-to-br from-[#191970]/95 from-0% via-[#191970]/90 via-80% to-[#191970]/85 to-100% text-white px-16 py-8 rounded-xl hover:from-[#191970]/100 hover:via-[#191970]/95 hover:to-[#191970]/90 transition-all duration-300 text-xl font-bold transform hover:scale-105">
-                                        Book a Ride
-                                    </button>
-                                </Link>
-                            </div>
-                        </div>
+
+            {/* Main Content Grid - Reordered for better mobile experience */}
+            <div className="mt-6 sm:mt-8 space-y-6 sm:space-y-8">
+                {/* 1. Wallet Balance - First Priority */}
+                <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 border-2 border-gray-100">
+                    <div className="flex flex-col items-center justify-center">
+                        <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3">Wallet Balance</h2>
+                        <p className="text-xl sm:text-2xl font-bold text-green-600 my-2">
+                            {walletLoading ? "Loading..." : `₦ ${walletBalance?.toFixed(2)}`}
+                        </p>
+                        <button
+                            className="flex items-center bg-green-600 text-white px-4 sm:px-6 py-2 rounded-lg shadow-md hover:bg-green-700 transition mt-2 text-sm sm:text-base"
+                            onClick={() => setShowAddFundsModal(true)}
+                        >
+                            Add Funds
+                            <ChevronRightIcon className="size-4 ml-1" />
+                        </button>
                     </div>
                 </div>
-                <div className="col-span-1 gap-4 mt-8 grid grid-rows-2">
-                    <div className="row-span-1 flex flex-row gap-4">
-                        <div className=" bg-white shadow-md rounded-lg p-4 w-full border-2">
-                            <div className="bg-white shadow-md rounded-lg p-4 flex flex-col items-center justify-center h-full">
-                                <h2 className="text-xl font-bold">Wallet Balance</h2>
-                                <p className="text-2xl my-2">{walletLoading ? "Loading..." : `₦ ${walletBalance?.toFixed(2)}`}</p>
-                                <div>
-                                    <button
-                                        className="flex items-center bg-green-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-green-700 transition mt-2"
-                                        onClick={() => setShowAddFundsModal(true)}
-                                    >
-                                        Add Funds
-                                        <ChevronRightIcon className="size-4 ml-1" />
-                                    </button>
-                                    {showAddFundsModal && (
-                                        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
-                                            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
-                                                <h3 className="text-lg font-bold mb-2">Add Funds</h3>
-                                                <form onSubmit={handleAddFunds}>
-                                                    <input
-                                                        type="text"
-                                                        inputMode="numeric"
-                                                        pattern="[0-9]*"
-                                                        className="border p-2 rounded w-full mb-4"
-                                                        placeholder="Enter amount (NGN)"
-                                                        value={addFundsAmount === 0 ? '' : addFundsAmount}
-                                                        onChange={handleAmountChange}
-                                                        required
-                                                    />
-                                                    {addFundsError && <p className="text-red-500 mb-2">{addFundsError}</p>}
-                                                    <div className="flex gap-2">
-                                                        <button
-                                                            type="submit"
-                                                            className="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-600"
-                                                            disabled={addFundsLoading}
-                                                        >
-                                                            {addFundsLoading ? "Processing..." : "Proceed to Paystack"}
-                                                        </button>
-                                                        <button
-                                                            type="button"
-                                                            className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400"
-                                                            onClick={() => setShowAddFundsModal(false)}
-                                                            disabled={addFundsLoading}
-                                                        >
-                                                            Cancel
-                                                        </button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
 
+                {/* 2. Book Ride Section - Second Priority */}
+                <div className="bg-white shadow-md rounded-lg p-4 sm:p-6">
+                    <div className="relative bg-[url(/images/users-sign-up.jpg)] bg-cover bg-center bg-no-repeat w-full rounded-lg border h-48 sm:h-64 md:h-80 flex items-center justify-center">
+                        <div className="absolute inset-0 bg-gradient-to-br from-[#191970]/40 via-[#191970]/30 to-[#DAA520]/30 rounded-lg"></div>
+                        <Link href="/user_dashboard/dashboard/rides" className="relative z-10">
+                            <button className="bg-gradient-to-br from-[#191970]/95 from-0% via-[#191970]/90 via-80% to-[#191970]/85 to-100% text-white px-8 sm:px-12 md:px-16 py-4 sm:py-6 md:py-8 rounded-xl hover:from-[#191970]/100 hover:via-[#191970]/95 hover:to-[#191970]/90 transition-all duration-300 text-lg sm:text-xl md:text-2xl font-bold transform hover:scale-105">
+                                Book a Ride
+                            </button>
+                        </Link>
                     </div>
-
                 </div>
 
+                {/* 3. Other Stats Cards - Third Priority */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                    {/* Upcoming Rides Card */}
+                    <div className="bg-white shadow-md rounded-lg p-4 sm:p-6">
+                        <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3">Upcoming Rides</h2>
+                        <p className="text-sm sm:text-base text-gray-600">No upcoming rides scheduled.</p>
+                    </div>
+
+                    {/* Ride History Card */}
+                    <div className="bg-white shadow-md rounded-lg p-4 sm:p-6">
+                        <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3">Ride History</h2>
+                        <p className="text-sm sm:text-base text-gray-600">No history.</p>
+                    </div>
+                </div>
             </div>
 
-
+            {/* Add Funds Modal */}
+            {showAddFundsModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white p-4 sm:p-6 rounded-lg shadow-lg w-full max-w-sm">
+                        <h3 className="text-lg font-bold mb-4">Add Funds</h3>
+                        <form onSubmit={handleAddFunds}>
+                            <input
+                                type="text"
+                                inputMode="numeric"
+                                pattern="[0-9]*"
+                                className="border p-3 rounded w-full mb-4 text-base"
+                                placeholder="Enter amount (NGN)"
+                                value={addFundsAmount === 0 ? '' : addFundsAmount}
+                                onChange={handleAmountChange}
+                                required
+                            />
+                            {addFundsError && <p className="text-red-500 mb-4 text-sm">{addFundsError}</p>}
+                            <div className="flex flex-col sm:flex-row gap-2">
+                                <button
+                                    type="submit"
+                                    className="bg-blue-700 text-white px-4 py-3 rounded hover:bg-blue-600 text-sm sm:text-base flex-1"
+                                    disabled={addFundsLoading}
+                                >
+                                    {addFundsLoading ? "Processing..." : "Proceed to Paystack"}
+                                </button>
+                                <button
+                                    type="button"
+                                    className="bg-gray-300 text-gray-700 px-4 py-3 rounded hover:bg-gray-400 text-sm sm:text-base flex-1"
+                                    onClick={() => setShowAddFundsModal(false)}
+                                    disabled={addFundsLoading}
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

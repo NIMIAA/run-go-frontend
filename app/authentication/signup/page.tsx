@@ -219,142 +219,259 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="xl:flex">
-      <div className="w-1/2">
-        <div className="xl:bg-black/50 bg-blend-multiply w-1/2 xl:bg-[url(/images/users-sign-up.jpg)] bg-cover bg-center bg-no-repeat bg-opacity-25 absolute inset-0"></div>
-      </div>
-      <div className="h-screen flex justify-center items-center mx-4 sm:mx-6 xl:w-1/2 overflow-y-auto">
-        <Link href="/">
-          <ArrowLeftCircleIcon className="absolute text-gray-400 top-4 left-4 size-6 xl:text-white/50 cursor-pointer" />
+    <div className="min-h-screen w-full overflow-x-hidden">
+      {/* Mobile/Tablet Header - Left Side Content */}
+      <div className="xl:hidden relative h-96 bg-[url(/images/users-sign-up.jpg)] bg-cover bg-center bg-no-repeat">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#191970]/90 via-[#191970]/80 to-[#DAA520]/70"></div>
+        {/* Back to Home Arrow - Mobile */}
+        <Link href="/" className="absolute top-4 left-4 z-20 text-white/80 hover:text-white transition-colors duration-200">
+          <ArrowLeftCircleIcon className="w-8 h-8" />
         </Link>
-        <div className="w-full max-w-md py-8">
-          <div className="text-center">
-            <p className="text-2xl sm:text-3xl font-semibold mb-4">Hello, Friend</p>
-            <p className="text-sm sm:text-md text-gray-500 mb-6">
-              Create an account to get your journey with us started
-            </p>
-            <p className="text-xs text-blue-600 mb-4">
-              📧 Use a real email address you can access - verification code will be sent there
-            </p>
-            <p className="text-xs text-gray-600 mb-4">
-              After verification, you'll be redirected to login to complete your account setup
-            </p>
+        {/* Mobile Overlay Content */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-center text-white px-6">
+            {/* Logo */}
+            <div className="flex items-center justify-center mb-4">
+              <img src="/images/Logo.png" alt="RUNGO Logo" className="w-24 h-auto object-contain drop-shadow-lg" onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.style.display = 'none';
+                const parent = e.currentTarget.parentNode;
+                if (parent) {
+                  (parent as HTMLElement).insertAdjacentHTML(
+                    'beforeend',
+                    "<span style='color:white;font-size:1.5rem;font-weight:bold;'>RUNGO</span>"
+                  );
+                }
+              }} />
+            </div>
 
+            <h1 className="text-2xl sm:text-3xl font-bold mb-4 leading-tight">
+              Join RUNGO Today!
+            </h1>
+            <p className="text-lg sm:text-xl mb-6 text-blue-100">
+              Create your account and start your journey with us
+            </p>
+            <div className="space-y-3 text-left max-w-sm mx-auto mb-6">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+                  <span className="text-white text-sm">🚗</span>
+                </div>
+                <span className="text-blue-100 text-sm">Book rides easily</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+                  <span className="text-white text-sm">💰</span>
+                </div>
+                <span className="text-blue-100 text-sm">Affordable prices</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+                  <span className="text-white text-sm">🛡️</span>
+                </div>
+                <span className="text-blue-100 text-sm">Safe and secure</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
+      {/* Desktop Left Side - Background Image with Gradient Overlay */}
+      <div className="hidden xl:block fixed left-0 top-0 h-screen w-1/2 z-0">
+        <div className="absolute inset-0 bg-[url(/images/users-sign-up.jpg)] bg-cover bg-center bg-no-repeat"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-[#191970]/90 via-[#191970]/80 to-[#DAA520]/70"></div>
+        {/* Back to Home Arrow - Desktop */}
+        <Link href="/" className="absolute top-6 left-6 z-20 text-white/80 hover:text-white transition-colors duration-200">
+          <ArrowLeftCircleIcon className="w-10 h-10" />
+        </Link>
+        {/* Desktop Overlay Content */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-center text-white px-8">
+            {/* Logo */}
+            <div className="flex items-center justify-center mb-6">
+              <img src="/images/Logo.png" alt="RUNGO Logo" className="w-36 h-auto object-contain drop-shadow-lg" onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.style.display = 'none';
+                const parent = e.currentTarget.parentNode;
+                if (parent) {
+                  (parent as HTMLElement).insertAdjacentHTML(
+                    'beforeend',
+                    "<span style='color:white;font-size:2rem;font-weight:bold;'>RUNGO</span>"
+                  );
+                }
+              }} />
+            </div>
+
+            <h1 className="text-4xl sm:text-5xl font-bold mb-6 leading-tight">
+              Join RUNGO Today!
+            </h1>
+            <p className="text-xl sm:text-2xl mb-8 text-blue-100">
+              Create your account and start your journey with us
+            </p>
+            <div className="space-y-4 text-left max-w-md mx-auto mb-8">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                  <span className="text-white text-lg">🚗</span>
+                </div>
+                <span className="text-blue-100">Book rides easily</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                  <span className="text-white text-lg">💰</span>
+                </div>
+                <span className="text-blue-100">Affordable prices</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                  <span className="text-white text-lg">🛡️</span>
+                </div>
+                <span className="text-blue-100">Safe and secure</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Right Side - Form */}
+      <div className="xl:ml-[50%] xl:w-[50%] min-h-screen flex items-center justify-center p-6">
+        <div className="w-full max-w-md">
+          {/* Mobile Back Arrow */}
+          <div className="xl:hidden mb-6">
+            <Link href="/" className="text-gray-600 hover:text-gray-800 transition-colors duration-200">
+              <ArrowLeftCircleIcon className="w-8 h-8" />
+            </Link>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-2xl p-8">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">Create Account</h2>
+              <p className="text-gray-600">Join RUNGO and start your journey</p>
+            </div>
 
             {/* General Error */}
             {errors.general && (
-              <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded flex items-center justify-center">
-                <XCircleIcon className="h-5 w-5 mr-2" />
-                {errors.general}
+              <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg flex items-center">
+                <XCircleIcon className="h-5 w-5 mr-2 flex-shrink-0" />
+                <span className="text-sm">{errors.general}</span>
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Student Toggle */}
-              <div className="flex items-center justify-center">
-                <label className="mr-2 font-semibold text-sm">I am a student</label>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* User Type Toggle */}
+              <div className="flex items-center justify-center p-2 bg-gray-100 rounded-lg">
+                <label className="mr-4 font-medium text-gray-700">I am a student</label>
                 <input
                   type="checkbox"
                   checked={isStudent}
                   onChange={() => setIsStudent(!isStudent)}
-                  className="w-4 h-4"
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
                 />
               </div>
 
               {/* Name Fields */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <div className="text-left text-sm font-semibold mb-1">First Name *</div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    First Name
+                  </label>
                   <input
                     type="text"
                     value={firstName}
-                    onChange={e => setFirstName(e.target.value)}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.firstName ? 'border-red-300' : 'border-gray-300'
+                      }`}
                     placeholder="John"
-                    className={`p-3 rounded w-full border-2 focus:outline-foreground text-sm ${errors.firstName ? 'border-red-500' : 'border-gray-300'}`}
-                    required
                   />
                   {errors.firstName && (
-                    <p className="text-red-500 text-xs mt-1 text-left">{errors.firstName}</p>
+                    <p className="mt-1 text-sm text-red-600">{errors.firstName}</p>
                   )}
                 </div>
                 <div>
-                  <div className="text-left text-sm font-semibold mb-1">Last Name *</div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Last Name
+                  </label>
                   <input
                     type="text"
                     value={lastName}
-                    onChange={e => setLastName(e.target.value)}
+                    onChange={(e) => setLastName(e.target.value)}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.lastName ? 'border-red-300' : 'border-gray-300'
+                      }`}
                     placeholder="Doe"
-                    className={`p-3 rounded w-full border-2 focus:outline-foreground text-sm ${errors.lastName ? 'border-red-500' : 'border-gray-300'}`}
-                    required
                   />
                   {errors.lastName && (
-                    <p className="text-red-500 text-xs mt-1 text-left">{errors.lastName}</p>
+                    <p className="mt-1 text-sm text-red-600">{errors.lastName}</p>
                   )}
                 </div>
               </div>
 
-              {/* Matric Number (Conditional) */}
+              {/* Email Field */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.email ? 'border-red-300' : 'border-gray-300'
+                    }`}
+                  placeholder="john.doe@example.com"
+                />
+                {errors.email && (
+                  <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+                )}
+              </div>
+
+              {/* Phone Number Field */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Phone Number
+                </label>
+                <input
+                  type="tel"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.phoneNumber ? 'border-red-300' : 'border-gray-300'
+                    }`}
+                  placeholder="+2348012345678"
+                />
+                {errors.phoneNumber && (
+                  <p className="mt-1 text-sm text-red-600">{errors.phoneNumber}</p>
+                )}
+              </div>
+
+              {/* Matric Number Field (for students) */}
               {isStudent && (
                 <div>
-                  <div className="text-left text-sm font-semibold mb-1">Matric Number *</div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Matric Number
+                  </label>
                   <input
                     type="text"
                     value={matricNumber}
-                    onChange={e => setMatricNumber(e.target.value)}
+                    onChange={(e) => setMatricNumber(e.target.value)}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.matricNumber ? 'border-red-300' : 'border-gray-300'
+                      }`}
                     placeholder="RUN/XYZ/00/00000"
-                    className={`p-3 rounded w-full border-2 focus:outline-foreground text-sm ${errors.matricNumber ? 'border-red-500' : 'border-gray-300'}`}
-                    required={isStudent}
                   />
                   {errors.matricNumber && (
-                    <p className="text-red-500 text-xs mt-1 text-left">{errors.matricNumber}</p>
+                    <p className="mt-1 text-sm text-red-600">{errors.matricNumber}</p>
                   )}
                 </div>
               )}
 
-              {/* Contact Fields */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <div className="text-left text-sm font-semibold mb-1">Email *</div>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
-                    placeholder="john@example.com"
-                    className={`p-3 rounded w-full border-2 focus:outline-foreground text-sm ${errors.email ? 'border-red-500' : 'border-gray-300'}`}
-                    required
-                  />
-                  {errors.email && (
-                    <p className="text-red-500 text-xs mt-1 text-left">{errors.email}</p>
-                  )}
-                </div>
-                <div>
-                  <div className="text-left text-sm font-semibold mb-1">Phone *</div>
-                  <input
-                    type="tel"
-                    value={phoneNumber}
-                    onChange={e => setPhoneNumber(e.target.value)}
-                    placeholder="08012345678"
-                    className={`p-3 rounded w-full border-2 focus:outline-foreground text-sm ${errors.phoneNumber ? 'border-red-500' : 'border-gray-300'}`}
-                    required
-                  />
-                  {errors.phoneNumber && (
-                    <p className="text-red-500 text-xs mt-1 text-left">{errors.phoneNumber}</p>
-                  )}
-                </div>
-              </div>
-
-              {/* Password Fields */}
+              {/* Password Field */}
               <div>
-                <div className="text-left text-sm font-semibold mb-1">Password *</div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Password
+                </label>
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
                     value={password}
-                    onChange={e => setPassword(e.target.value)}
-                    placeholder="Enter your password"
-                    className={`p-3 rounded w-full border-2 focus:outline-foreground text-sm pr-12 ${errors.password ? 'border-red-500' : 'border-gray-300'}`}
-                    required
+                    onChange={(e) => setPassword(e.target.value)}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-12 ${errors.password ? 'border-red-300' : 'border-gray-300'
+                      }`}
+                    placeholder="Create a strong password"
                   />
                   <button
                     type="button"
@@ -362,51 +479,60 @@ export default function SignupPage() {
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
                   >
                     {showPassword ? (
-                      <EyeSlashIcon className="h-4 w-4" />
+                      <EyeSlashIcon className="h-5 w-5" />
                     ) : (
-                      <EyeIcon className="h-4 w-4" />
+                      <EyeIcon className="h-5 w-5" />
                     )}
                   </button>
                 </div>
                 {errors.password && (
-                  <p className="text-red-500 text-xs mt-1 text-left">{errors.password}</p>
+                  <p className="mt-1 text-sm text-red-600">{errors.password}</p>
                 )}
 
                 {/* Password Strength Indicator */}
                 {password && (
-                  <div className="mt-2">
-                    <div className="flex space-x-1 mb-2">
-                      {[1, 2, 3, 4, 5].map((level) => (
-                        <div
-                          key={level}
-                          className={`h-2 flex-1 rounded ${level <= passwordStrength.score ? passwordStrength.color : 'bg-gray-200'
-                            }`}
-                        />
-                      ))}
+                  <div className="mt-3">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="flex gap-1">
+                        {[1, 2, 3, 4, 5].map((level) => (
+                          <div
+                            key={level}
+                            className={`h-2 w-8 rounded ${level <= passwordStrength.score ? passwordStrength.color : 'bg-gray-200'
+                              }`}
+                          />
+                        ))}
+                      </div>
+                      <span className="text-xs text-gray-600">
+                        {passwordStrength.score < 3 ? 'Weak' : passwordStrength.score < 4 ? 'Good' : 'Strong'}
+                      </span>
                     </div>
                     {passwordStrength.feedback.length > 0 && (
-                      <div className="text-xs text-gray-600">
-                        <ul className="list-disc list-inside">
-                          {passwordStrength.feedback.map((item, index) => (
-                            <li key={index}>{item}</li>
-                          ))}
-                        </ul>
+                      <div className="text-xs text-gray-600 space-y-1">
+                        {passwordStrength.feedback.map((feedback, index) => (
+                          <div key={index} className="flex items-center gap-1">
+                            <span className="text-red-500">•</span>
+                            {feedback}
+                          </div>
+                        ))}
                       </div>
                     )}
                   </div>
                 )}
               </div>
 
+              {/* Confirm Password Field */}
               <div>
-                <div className="text-left text-sm font-semibold mb-1">Confirm Password *</div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Confirm Password
+                </label>
                 <div className="relative">
                   <input
                     type={showConfirmPassword ? "text" : "password"}
                     value={confirmPassword}
-                    onChange={e => setConfirmPassword(e.target.value)}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-12 ${errors.confirmPassword ? 'border-red-300' : 'border-gray-300'
+                      }`}
                     placeholder="Confirm your password"
-                    className={`p-3 rounded w-full border-2 focus:outline-foreground text-sm pr-12 ${errors.confirmPassword ? 'border-red-500' : 'border-gray-300'}`}
-                    required
                   />
                   <button
                     type="button"
@@ -414,36 +540,41 @@ export default function SignupPage() {
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
                   >
                     {showConfirmPassword ? (
-                      <EyeSlashIcon className="h-4 w-4" />
+                      <EyeSlashIcon className="h-5 w-5" />
                     ) : (
-                      <EyeIcon className="h-4 w-4" />
+                      <EyeIcon className="h-5 w-5" />
                     )}
                   </button>
                 </div>
                 {errors.confirmPassword && (
-                  <p className="text-red-500 text-xs mt-1 text-left">{errors.confirmPassword}</p>
+                  <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>
                 )}
               </div>
 
+              {/* Submit Button */}
               <button
                 type="submit"
-                className="bg-foreground hover:bg-indigo-900 text-background text-md my-2 p-4 rounded w-full cursor-pointer transition-transform duration-200 ease-in hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={loading}
+                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
               >
-                {loading ? "Initiating Registration..." : "Continue to Verification"}
+                {loading ? "Creating Account..." : "Create Account"}
               </button>
             </form>
 
-            {/* Navigation Links */}
-            <div className="my-4 space-y-2">
-              <Link href="/authentication/login">
-                <p className="text-gray-600 text-sm">
-                  Already have an account?{" "}
-                  <span className="font-bold text-sm text-black hover:text-foreground">
-                    Sign In
-                  </span>
-                </p>
-              </Link>
+            {/* Login Link */}
+            <div className="mt-8 text-center">
+              <p className="text-gray-600">
+                Already have an account?{" "}
+                <Link href="/authentication/login" className="text-blue-600 hover:text-blue-700 font-medium">
+                  Sign In
+                </Link>
+              </p>
+            </div>
+
+            {/* Additional Info */}
+            <div className="mt-6 text-center text-xs text-gray-500 space-y-1">
+              <p>📧 Use a real email address you can access - verification code will be sent there</p>
+              <p>After verification, you'll be redirected to login to complete your account setup</p>
             </div>
           </div>
         </div>

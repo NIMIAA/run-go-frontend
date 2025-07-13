@@ -1,12 +1,15 @@
 "use client";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { routes } from "./routes";
 import AppLogo from "../app/logo";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
+
   return (
     <nav className="bg-transparent text-background px-8 lg:px-16 py-4 flex justify-between items-center">
       <div className="">
@@ -15,16 +18,21 @@ export default function Navbar() {
         </Link>
       </div>
       <div className="hidden lg:block">
-        {routes.map((route) => (
-          <Link
-            href={route.path}
-            className="font-semibold text-lg px-8 py-2 hover:bg-hover-gold rounded-sm capitalize"
-            key={route.path}
-          >
-            {" "}
-            {route.label}{" "}
-          </Link>
-        ))}
+        {routes.map((route) => {
+          const isActive = pathname === route.path;
+          return (
+            <Link
+              href={route.path}
+              className={`font-semibold text-lg px-8 py-2 rounded-sm capitalize transition-all duration-200 ${isActive
+                ? "bg-hover-gold text-white shadow-md"
+                : "hover:bg-hover-gold hover:text-white"
+                }`}
+              key={route.path}
+            >
+              {route.label}
+            </Link>
+          );
+        })}
       </div>
 
       <div className="hidden font-medium lg:block">
@@ -60,18 +68,22 @@ export default function Navbar() {
             <Link href="/">
               <AppLogo />
             </Link>
-            {routes.map((route) => (
-              <>
-                <li>
+            {routes.map((route) => {
+              const isActive = pathname === route.path;
+              return (
+                <li key={route.path}>
                   <Link
                     href={route.path}
-                    className="block p-2 pb-4 text-xl border-b capitalize"
+                    className={`block p-2 pb-4 text-xl border-b capitalize transition-all duration-200 ${isActive
+                      ? "text-hover-gold font-semibold bg-gray-100"
+                      : "hover:text-hover-gold"
+                      }`}
                   >
                     {route.label}
                   </Link>
                 </li>
-              </>
-            ))}
+              );
+            })}
           </div>
         </ul>
       )}

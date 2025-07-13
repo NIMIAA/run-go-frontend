@@ -43,6 +43,7 @@ export default function Home() {
       </header>
 
       <main className="xl:px-16">
+        {/* How it works Section */}
         <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8 bg-blend-multiply bg-no-repeat bg-cover bg-white bg-opacity-75 bg-center">
           <div className="mx-auto max-w-2xl lg:text-center">
             <p className="mt-2 text-4xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-5xl lg:text-balance mb-4 text-center">
@@ -96,10 +97,9 @@ export default function Home() {
               </div>
             </div>
           </div>
-
         </div>
 
-
+        {/* Why choose us Section */}
         <div className="mx-auto max-w-7xl px-6 py-8 lg:px-8 bg-blend-multiply bg-no-repeat bg-cover bg-white bg-opacity-75 bg-center ">
           <div className="mx-auto max-w-2xl lg:text-center">
             <p className="mt-2 text-4xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-5xl lg:text-balance mb-4 text-center">
@@ -173,6 +173,33 @@ export default function Home() {
                   campus again!
                 </p>
               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Quick Overview Section */}
+        <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8 bg-blend-multiply bg-no-repeat bg-cover bg-white bg-opacity-75 bg-center">
+          <div className="mx-auto max-w-4xl text-center">
+            <h2 className="text-4xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-5xl lg:text-balance mb-6">
+              Get Started in Minutes
+            </h2>
+            <p className="text-xl text-gray-600 mb-8">
+              Join thousands of students and professionals who trust Rungo for their daily commute.
+              Learn more about our platform and features.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <a
+                href="/about"
+                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
+              >
+                Learn More About Rungo
+              </a>
+              <a
+                href="/authentication/signup"
+                className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white font-semibold px-8 py-4 rounded-lg transition-all duration-300"
+              >
+                Start Riding Now
+              </a>
             </div>
           </div>
         </div>

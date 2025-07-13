@@ -17,8 +17,6 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-
-
   // Validation function for matric number
   const validateMatricNumber = (matric: string): string | undefined => {
     if (!isStudent) return undefined;
@@ -91,129 +89,244 @@ export default function Login() {
   };
 
   return (
-    <div>
-      <div className="xl:flex">
-        <div className="w-1/2">
-          <div className="xl:bg-black/50 bg-blend-multiply xl:bg-[url(/images/background/bg-4.jpg)] w-1/2 bg-cover bg-center bg-no-repeat bg-opacity-25 absolute inset-0"></div>
+    <div className="min-h-screen w-full overflow-x-hidden">
+      {/* Mobile/Tablet Header - Left Side Content */}
+      <div className="xl:hidden relative h-96 bg-[url(/images/background/bg-4.jpg)] bg-cover bg-center bg-no-repeat">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#191970]/90 via-[#191970]/80 to-[#DAA520]/70"></div>
+        {/* Back to Home Arrow - Mobile */}
+        <Link href="/" className="absolute top-4 left-4 z-20 text-white/80 hover:text-white transition-colors duration-200">
+          <ArrowLeftCircleIcon className="w-8 h-8" />
+        </Link>
+        {/* Mobile Overlay Content */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-center text-white px-6">
+            {/* Logo */}
+            <div className="flex items-center justify-center mb-4">
+              <img src="/images/Logo.png" alt="RUNGO Logo" className="w-24 h-auto object-contain drop-shadow-lg" onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.style.display = 'none';
+                const parent = e.currentTarget.parentNode;
+                if (parent) {
+                  (parent as HTMLElement).insertAdjacentHTML(
+                    'beforeend',
+                    "<span style='color:white;font-size:1.5rem;font-weight:bold;'>RUNGO</span>"
+                  );
+                }
+              }} />
+            </div>
+
+            <h1 className="text-2xl sm:text-3xl font-bold mb-4 leading-tight">
+              Welcome Back!
+            </h1>
+            <p className="text-lg sm:text-xl mb-6 text-blue-100">
+              Sign in to your RUNGO account
+            </p>
+            <div className="space-y-3 text-left max-w-sm mx-auto mb-6">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+                  <span className="text-white text-sm">🚗</span>
+                </div>
+                <span className="text-blue-100 text-sm">Book your rides</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+                  <span className="text-white text-sm">💰</span>
+                </div>
+                <span className="text-blue-100 text-sm">Track your spending</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+                  <span className="text-white text-sm">📊</span>
+                </div>
+                <span className="text-blue-100 text-sm">View your history</span>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="h-screen flex justify-center items-center mx-6 xl:w-1/2">
-          <Link href="/">
-            <ArrowLeftCircleIcon className="absolute text-gray-400 top-4 left-4 size-6 xl:text-white/50 cursor-pointer" />
-          </Link>
-          <div>
-            <div className="text-center">
-              <p className="text-3xl font-semibold mb-4">Login</p>
-              <p className="text-md text-gray-500 mb-8">
-                To stay connected with us, login with your personal info
-              </p>
+      </div>
 
-              {/* Success Message */}
-              {success && (
-                <div className="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded flex items-center justify-center">
-                  <CheckCircleIcon className="h-5 w-5 mr-2" />
-                  {success}
+      {/* Desktop Left Side - Background Image with Gradient Overlay */}
+      <div className="hidden xl:block fixed left-0 top-0 h-screen w-1/2 z-0">
+        <div className="absolute inset-0 bg-[url(/images/background/bg-4.jpg)] bg-cover bg-center bg-no-repeat"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-[#191970]/90 via-[#191970]/80 to-[#DAA520]/70"></div>
+        {/* Back to Home Arrow - Desktop */}
+        <Link href="/" className="absolute top-6 left-6 z-20 text-white/80 hover:text-white transition-colors duration-200">
+          <ArrowLeftCircleIcon className="w-10 h-10" />
+        </Link>
+        {/* Desktop Overlay Content */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-center text-white px-8">
+            {/* Logo */}
+            <div className="flex items-center justify-center mb-6">
+              <img src="/images/Logo.png" alt="RUNGO Logo" className="w-36 h-auto object-contain drop-shadow-lg" onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.style.display = 'none';
+                const parent = e.currentTarget.parentNode;
+                if (parent) {
+                  (parent as HTMLElement).insertAdjacentHTML(
+                    'beforeend',
+                    "<span style='color:white;font-size:2rem;font-weight:bold;'>RUNGO</span>"
+                  );
+                }
+              }} />
+            </div>
+
+            <h1 className="text-4xl sm:text-5xl font-bold mb-6 leading-tight">
+              Welcome Back!
+            </h1>
+            <p className="text-xl sm:text-2xl mb-8 text-blue-100">
+              Sign in to your RUNGO account
+            </p>
+            <div className="space-y-4 text-left max-w-md mx-auto mb-8">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                  <span className="text-white text-lg">🚗</span>
                 </div>
-              )}
-
-              {/* Error Message */}
-              {error && (
-                <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded flex items-center justify-center">
-                  <XCircleIcon className="h-5 w-5 mr-2" />
-                  {error}
+                <span className="text-blue-100">Book your rides</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                  <span className="text-white text-lg">💰</span>
                 </div>
-              )}
+                <span className="text-blue-100">Track your spending</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                  <span className="text-white text-lg">📊</span>
+                </div>
+                <span className="text-blue-100">View your history</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-              <form onSubmit={handleSubmit}>
-                <div className="flex items-center justify-center my-4">
-                  <label className="mr-2 font-semibold">I am a student</label>
+      {/* Right Side - Form */}
+      <div className="xl:ml-[50%] xl:w-[50%] min-h-screen flex items-center justify-center p-6">
+        <div className="w-full max-w-md">
+          {/* Mobile Back Arrow */}
+          <div className="xl:hidden mb-6">
+            <Link href="/" className="text-gray-600 hover:text-gray-800 transition-colors duration-200">
+              <ArrowLeftCircleIcon className="w-8 h-8" />
+            </Link>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-2xl p-8">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">Sign In</h2>
+              <p className="text-gray-600">Welcome back to RUNGO</p>
+            </div>
+
+            {/* Success Message */}
+            {success && (
+              <div className="mb-6 p-4 bg-green-50 border border-green-200 text-green-700 rounded-lg flex items-center">
+                <CheckCircleIcon className="h-5 w-5 mr-2 flex-shrink-0" />
+                <span className="text-sm">{success}</span>
+              </div>
+            )}
+
+            {/* Error Message */}
+            {error && (
+              <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg flex items-center">
+                <XCircleIcon className="h-5 w-5 mr-2 flex-shrink-0" />
+                <span className="text-sm">{error}</span>
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* User Type Toggle */}
+              <div className="flex items-center justify-center p-2 bg-gray-100 rounded-lg">
+                <label className="mr-4 font-medium text-gray-700">I am a student</label>
+                <input
+                  type="checkbox"
+                  checked={isStudent}
+                  onChange={() => setIsStudent(!isStudent)}
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                />
+              </div>
+
+              {/* Login Field */}
+              {isStudent ? (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Matric Number
+                  </label>
                   <input
-                    type="checkbox"
-                    checked={isStudent}
-                    onChange={() => setIsStudent(!isStudent)}
+                    type="text"
+                    value={matricNumber}
+                    onChange={e => setMatricNumber(e.target.value)}
+                    placeholder="RUN/XYZ/00/00000"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required
                   />
                 </div>
-                {isStudent ? (
-                  <div className="flex flex-col items-center justify-center my-4">
-                    <div className="w-full text-left text-sm font-semibold mb-2">
-                      Matric Number
-                    </div>
-                    <input
-                      type="text"
-                      value={matricNumber}
-                      onChange={e => setMatricNumber(e.target.value)}
-                      placeholder="run/xyz/00/0000"
-                      className="p-4 rounded w-full border-2 border-gray-300 focus:outline-foreground"
-                      required
-                    />
-                  </div>
-                ) : (
-                  <div className="flex flex-col items-center justify-center my-4">
-                    <div className="w-full text-left text-sm font-semibold mb-2">
-                      Email
-                    </div>
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={e => setEmail(e.target.value)}
-                      placeholder="user@example.com"
-                      className="p-4 rounded w-full border-2 border-gray-300 focus:outline-foreground"
-                      required
-                    />
-                  </div>
-                )}
-                <div className="flex flex-col items-center justify-center my-4">
-                  <div className="w-full text-left text-sm font-semibold mb-2">
-                    Password
-                  </div>
-                  <div className="relative w-full">
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      value={password}
-                      onChange={e => setPassword(e.target.value)}
-                      placeholder="********"
-                      className="p-4 rounded w-full border-2 border-gray-300 focus:outline-foreground pr-12"
-                      required
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                    >
-                      {showPassword ? (
-                        <EyeSlashIcon className="h-5 w-5" />
-                      ) : (
-                        <EyeIcon className="h-5 w-5" />
-                      )}
-                    </button>
-                  </div>
-                  <span className="text-right w-full text-sm mt-1 text-foreground">
-                    <Link href="/authentication/recorver-account">
-                      Forgot Password?
-                    </Link>
-                  </span>
+              ) : (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Email Address
+                  </label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    placeholder="user@example.com"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required
+                  />
                 </div>
-                <button
-                  type="submit"
-                  className="bg-foreground hover:bg-indigo-900 text-background text-md my-2 p-4 rounded w-full cursor-pointer transition-transform duration-200 ease-in hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-                  disabled={loading}
-                >
-                  {loading ? "Logging in..." : "Continue as a user"}
-                </button>
-              </form>
+              )}
 
-              {/* Help Links */}
-              <div className="my-4 space-y-2">
-                <Link href="/authentication/signup">
-                  <p className="text-gray-600 text-sm">
-                    Don&apos;t have an account?{" "}
-                    <span className="font-bold text-sm text-black hover:text-foreground">
-                      Sign Up
-                    </span>
-                  </p>
-                </Link>
-
-
+              {/* Password Field */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Password
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    placeholder="Enter your password"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-12"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                  >
+                    {showPassword ? (
+                      <EyeSlashIcon className="h-5 w-5" />
+                    ) : (
+                      <EyeIcon className="h-5 w-5" />
+                    )}
+                  </button>
+                </div>
+                <div className="mt-2 text-right">
+                  <Link href="/authentication/recorver-account" className="text-sm text-blue-600 hover:text-blue-700">
+                    Forgot Password?
+                  </Link>
+                </div>
               </div>
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              >
+                {loading ? "Signing In..." : "Sign In"}
+              </button>
+            </form>
+
+            {/* Sign Up Link */}
+            <div className="mt-8 text-center">
+              <p className="text-gray-600">
+                Don't have an account?{" "}
+                <Link href="/authentication/signup" className="text-blue-600 hover:text-blue-700 font-medium">
+                  Sign Up
+                </Link>
+              </p>
             </div>
           </div>
         </div>
