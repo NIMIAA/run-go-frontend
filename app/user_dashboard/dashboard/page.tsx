@@ -4,17 +4,30 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { getUserData, User, logout } from "@/app/utils/auth";
-import { getUserProfile, getWalletBalance, fundWallet } from "@/app/utils/api";
+import { getWalletBalance, fundWallet } from "@/app/utils/api";
 import ProfileAvatar from "@/app/components/profile/ProfileAvatar";
 import { useRouter, useSearchParams } from "next/navigation";
 import WalletPage from "./wallet/page";
+import { useProfileImage } from "@/app/hooks/useProfileImage";
+
+interface Ride {
+    id: string;
+    driverName: string;
+    driverPhone: string;
+    carDetails: string;
+    pickup: string;
+    destination: string;
+    status: string;
+}
 
 export default function DashboardPage() {
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(true);
-    const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
+    const { profileImageUrl, isLoading: profileImageLoading } = useProfileImage();
     const [walletBalance, setWalletBalance] = useState<number | null>(null);
     const [walletLoading, setWalletLoading] = useState(false);
+    const [upcomingRides, setUpcomingRides] = useState<Ride[]>([]);
+    const [ridesLoading, setRidesLoading] = useState(false);
     const router = useRouter();
     const searchParams = useSearchParams();
     const tab = searchParams.get("tab");
@@ -30,12 +43,12 @@ export default function DashboardPage() {
         const userData = getUserData();
         setUser(userData);
 
-        // Load profile data from backend
-        loadProfileData();
         // Load wallet balance
         if (userData?.email) {
             fetchWalletBalance(userData.email);
         }
+        // Load upcoming rides
+        fetchUpcomingRides();
         setIsLoading(false);
         if (payment === "success") {
             setShowPaymentSuccess(true);
@@ -44,16 +57,13 @@ export default function DashboardPage() {
         }
     }, [payment]);
 
-    const loadProfileData = async () => {
-        try {
-            const response = await getUserProfile();
-            if (response.success && response.data?.profileImageUrl) {
-                setProfileImageUrl(`http://localhost:5000${response.data.profileImageUrl}`);
-            }
-        } catch (error) {
-            console.error('Failed to load profile data:', error);
-        }
-    };
+    // Auto-refresh upcoming rides every 10 seconds
+    useEffect(() => {
+        const interval = setInterval(() => {
+            fetchUpcomingRides();
+        }, 10000); // Refresh every 10 seconds
+        return () => clearInterval(interval);
+    }, []);
 
     const fetchWalletBalance = async (email: string) => {
         try {
@@ -64,6 +74,55 @@ export default function DashboardPage() {
         } catch (err) {
             setWalletBalance(0);
             setWalletLoading(false);
+        }
+    };
+
+    const fetchUpcomingRides = async () => {
+        setRidesLoading(true);
+        try {
+            const token = typeof window !== "undefined" ? localStorage.getItem("jwtToken") : null;
+            if (!token) {
+                console.log("No JWT token found");
+                setRidesLoading(false);
+                return;
+            }
+
+            // Decode JWT to get userIdentifier
+            let userIdentifier = "";
+            try {
+                const payload = JSON.parse(atob(token.split(".")[1]));
+                userIdentifier = payload.userIdentifier || payload.sub || "";
+            } catch (error) {
+                console.error("Error decoding JWT token:", error);
+                setRidesLoading(false);
+                return;
+            }
+
+            if (!userIdentifier) {
+                console.log("No user identifier found in token");
+                setRidesLoading(false);
+                return;
+            }
+
+            const res = await fetch(`/v1/booking/user-upcoming-rides/${userIdentifier}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+
+            if (!res.ok) {
+                console.error("Failed to fetch upcoming rides:", res.status, res.statusText);
+                setRidesLoading(false);
+                return;
+            }
+
+            const data = await res.json();
+            const safeArray: Ride[] = Array.isArray(data) ? data : [];
+            setUpcomingRides(safeArray);
+            console.log("Fetched upcoming rides:", safeArray);
+        } catch (err) {
+            console.error("Error fetching upcoming rides:", err);
+            setUpcomingRides([]);
+        } finally {
+            setRidesLoading(false);
         }
     };
 
@@ -129,10 +188,19 @@ export default function DashboardPage() {
                     </p>
                 </div>
                 <div className="flex items-center">
-                    <ProfileAvatar
-                        user={user}
-                        profileImageUrl={profileImageUrl}
-                        size="md"
+                    <img
+                        src={profileImageUrl || "/default-profile.png"}
+                        alt="Profile"
+                        style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover' }}
+                        crossOrigin="anonymous"
+                        onError={(e) => {
+                            const target = e.currentTarget;
+                            target.style.display = 'none';
+                            const parent = target.parentElement;
+                            if (parent) {
+                                parent.innerHTML = `<div class='w-10 h-10 bg-gradient-to-br from-[#191970] via-blue-500 to-yellow-400 rounded-full flex items-center justify-center text-white font-bold text-base'>${user ? `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase() : 'U'}</div>`;
+                            }
+                        }}
                     />
                 </div>
             </div>
@@ -153,12 +221,20 @@ export default function DashboardPage() {
                     <div className="flex flex-row items-center justify-between gap-3 bg-white rounded-lg shadow-md p-3 border border-gray-200 hover:shadow-lg transition-shadow">
                         <div className="flex flex-row items-center gap-3">
                             {/* Profile Picture */}
-                            <ProfileAvatar
-                                user={user}
-                                profileImageUrl={profileImageUrl}
-                                size="md"
+                            <img
+                                src={profileImageUrl || "/default-profile.png"}
+                                alt="Profile"
+                                style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover' }}
+                                crossOrigin="anonymous"
+                                onError={(e) => {
+                                    const target = e.currentTarget;
+                                    target.style.display = 'none';
+                                    const parent = target.parentElement;
+                                    if (parent) {
+                                        parent.innerHTML = `<div class='w-10 h-10 bg-gradient-to-br from-[#191970] via-blue-500 to-yellow-400 rounded-full flex items-center justify-center text-white font-bold text-base'>${user ? `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase() : 'U'}</div>`;
+                                    }
+                                }}
                             />
-
                             {/* User Info */}
                             <div className="flex flex-col items-start justify-center min-w-0">
                                 <p className="font-semibold text-gray-800 text-base truncate">

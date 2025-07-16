@@ -18,6 +18,7 @@ import Link from "next/link";
 import { DriverSocketProvider, useDriverSocket } from "@/app/context/DriverSocketContext";
 import { useRouter } from "next/navigation";
 import ActiveRidesTab from "./ActiveRidesTab";
+import { useProfileImage } from "@/app/hooks/useProfileImage";
 
 function RideRequestModal() {
     const { currentRideRequest, sendRideResponse, setCurrentRideRequest } = useDriverSocket();
@@ -57,6 +58,7 @@ function DashboardContent() {
     const avatarDropdownTimeout = useRef<NodeJS.Timeout | null>(null);
     const [error, setError] = useState<string | null>(null);
     const router = useRouter();
+    const { profileImageUrl, isLoading: profileImageLoading } = useProfileImage();
 
     useEffect(() => {
         const driverData = getDriverData();
@@ -228,7 +230,6 @@ function DashboardContent() {
 
     return (
         <div>
-            <div>Dashboard loaded</div>
             <div className="mx-8">
                 <div className="flex flex-row justify-between items-center">
                     <div className="flex flex-col justify-center items-start mt-8">
@@ -250,18 +251,11 @@ function DashboardContent() {
                             }}
                         >
                             <Link href="/driver_dashboard/profile" className="block">
-                                <ProfileAvatar
-                                    user={{
-                                        id: driver.identifier,
-                                        firstName: driver.firstName,
-                                        lastName: driver.lastName,
-                                        email: driver.email,
-                                        isStudent: false,
-                                        emailVerified: driver.isVerified,
-                                        phoneNumber: driver.phoneNumber
-                                    }}
-                                    size="md"
-                                    showBorder={true}
+                                <img
+                                    src={profileImageUrl || "/default-profile.png"}
+                                    alt="Profile"
+                                    style={{ width: 120, height: 120, borderRadius: '50%', objectFit: 'cover' }}
+                                    crossOrigin="anonymous"
                                 />
                             </Link>
                             {avatarDropdownOpen && (
@@ -318,7 +312,7 @@ function DashboardContent() {
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="text-sm font-medium text-gray-600">Today's Earnings</p>
-                                <p className="text-2xl font-bold text-gray-900">$45.50</p>
+                                <p className="text-2xl font-bold text-gray-900">₦45,500</p>
                             </div>
                             <CurrencyDollarIcon className="h-8 w-8 text-green-600" />
                         </div>
@@ -377,7 +371,7 @@ function DashboardContent() {
                                         <p className="text-sm font-medium">Ride completed</p>
                                         <p className="text-xs text-gray-500">2 hours ago</p>
                                     </div>
-                                    <p className="text-sm font-semibold text-green-600">+$12.50</p>
+                                    <p className="text-sm font-semibold text-green-600">+₦12,500</p>
                                 </div>
                                 <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                                     <div className="w-2 h-2 bg-blue-500 rounded-full"></div>

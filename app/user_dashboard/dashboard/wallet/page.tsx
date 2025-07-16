@@ -18,14 +18,19 @@ export default function WalletPage() {
     const [filterType, setFilterType] = useState("all");
     const [filterStatus, setFilterStatus] = useState("all");
     const [showToast, setShowToast] = useState<{ type: 'success' | 'error', message: string } | null>(null);
+    const [page, setPage] = useState(1);
+    const [limit] = useState(10);
+    const [total, setTotal] = useState(0);
 
     const user = getUserData();
-    const userEmail = user?.email || "";
+    const userIdentifier = user?.email;
 
+    // Fetch wallet balance and transactions
     const fetchBalance = async () => {
+        if (!userIdentifier || typeof userIdentifier !== 'string') return;
         try {
             setLoading(true);
-            const res = await getWalletBalance(userEmail);
+            const res = await getWalletBalance(userIdentifier);
             setBalance(res.data?.balance || 0);
             setLoading(false);
         } catch (err) {
@@ -35,19 +40,30 @@ export default function WalletPage() {
     };
 
     const fetchTransactions = async () => {
+        if (!userIdentifier || typeof userIdentifier !== 'string') return;
         try {
             setTxLoading(true);
-            const res = await getWalletTransactions(userEmail);
-            setTransactions(res.data || []);
+            setTxError("");
+            const res = await fetch(`http://localhost:5000/v1/wallet/transactions?userIdentifier=${userIdentifier}&page=${page}&limit=${limit}`);
+            if (!res.ok) throw new Error("Failed to fetch transactions");
+            const data = await res.json();
+            // Support both array and paginated object response
+            if (Array.isArray(data)) {
+                setTransactions(data);
+                setTotal(data.length < limit && page === 1 ? data.length : 0); // fallback if backend doesn't return total
+            } else {
+                setTransactions(Array.isArray(data.transactions) ? data.transactions : []);
+                setTotal(typeof data.total === 'number' ? data.total : 0);
+            }
             setTxLoading(false);
-        } catch (err) {
-            setTxError("Failed to fetch transactions");
+        } catch (err: any) {
+            setTxError(err.message || "Failed to fetch transactions");
             setTxLoading(false);
         }
     };
 
     useEffect(() => {
-        if (!userEmail) return;
+        if (!userIdentifier || typeof userIdentifier !== 'string') return;
         fetchBalance();
         fetchTransactions();
         // Auto-refresh after Paystack redirect
@@ -58,14 +74,19 @@ export default function WalletPage() {
                 fetchTransactions();
             }
         }
-    }, [userEmail]);
+    }, [userIdentifier, page, limit]);
 
     const handleAddFunds = async (e: React.FormEvent) => {
         e.preventDefault();
         setError("");
         setLoading(true);
+        if (!userIdentifier || typeof userIdentifier !== 'string') {
+            setError("User identifier not found");
+            setLoading(false);
+            return;
+        }
         try {
-            const res = await fundWallet(amount, userEmail);
+            const res = await fundWallet(amount, userIdentifier);
             const paystackUrl = res.data?.authorization_url || res.data?.paystackUrl;
             if (paystackUrl) {
                 window.location.href = paystackUrl;
@@ -145,13 +166,23 @@ export default function WalletPage() {
                         <ArrowDownTrayIcon className="w-4 h-4 mr-1" /> Add Funds
                     </button>
                     <button
-                        className="flex-1 flex items-center justify-center bg-gray-700 text-white px-4 py-2 h-full rounded-lg shadow-md hover:bg-gray-800 transition text-sm min-w-[120px]"
+                        className="hidden md:flex flex-1 items-center justify-center bg-gray-700 text-white px-4 py-2 h-full rounded-lg shadow-md hover:bg-gray-800 transition text-sm min-w-[120px]"
                         onClick={handleDownloadCSV}
                         title="Download transaction history as CSV"
                     >
                         <ArrowDownTrayIcon className="w-4 h-4 mr-1" /> Download Transaction History
                     </button>
                 </div>
+            </div>
+            {/* Download Transaction History button for small screens */}
+            <div className="flex md:hidden w-full mt-4">
+                <button
+                    className="flex-1 flex items-center justify-center bg-gray-700 text-white px-4 py-2 rounded-lg shadow-md hover:bg-gray-800 transition text-sm min-w-[120px]"
+                    onClick={handleDownloadCSV}
+                    title="Download transaction history as CSV"
+                >
+                    <ArrowDownTrayIcon className="w-4 h-4 mr-1" /> Download Transaction History
+                </button>
             </div>
             {/* Add Funds Modal (existing) */}
             {showModal && (
@@ -191,70 +222,62 @@ export default function WalletPage() {
                 </div>
             )}
             <div className="mt-12">
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-2">
-                    <h2 className="text-xl font-semibold">Transaction History</h2>
-                    <div className="flex flex-wrap gap-2 items-center">
-                        <input
-                            type="text"
-                            className="border rounded px-3 py-1 text-sm"
-                            placeholder="Search by type or status..."
-                            value={search}
-                            onChange={e => setSearch(e.target.value)}
-                        />
-                        <select
-                            className="border rounded px-2 py-1 text-sm"
-                            value={filterType}
-                            onChange={e => setFilterType(e.target.value)}
-                        >
-                            <option value="all">All Types</option>
-                            <option value="credit">Credit</option>
-                            <option value="debit">Debit</option>
-                        </select>
-                        <select
-                            className="border rounded px-2 py-1 text-sm"
-                            value={filterStatus}
-                            onChange={e => setFilterStatus(e.target.value)}
-                        >
-                            <option value="all">All Statuses</option>
-                            <option value="success">Success</option>
-                            <option value="pending">Pending</option>
-                            <option value="failed">Failed</option>
-                        </select>
-                    </div>
-                </div>
+                <h2 className="text-xl font-semibold mb-4">Transaction History</h2>
                 {txLoading ? (
                     <div className="flex items-center justify-center min-h-[100px]">
                         <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
                     </div>
                 ) : txError ? (
                     <div className="text-red-600 text-center py-4">{txError}</div>
-                ) : filteredTransactions.length === 0 ? (
-                    <div className="text-gray-500 text-center py-4">No transactions yet.</div>
+                ) : transactions.length === 0 ? (
+                    <div className="text-gray-500 text-center py-4">No transactions found.</div>
                 ) : (
-                    <div className="overflow-x-auto bg-white rounded-lg shadow-md">
-                        <table className="min-w-full divide-y divide-gray-200">
-                            <thead className="bg-gray-50">
-                                <tr>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date/Time</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody className="bg-white divide-y divide-gray-200">
-                                {filteredTransactions.map((tx: any) => (
-                                    <tr key={tx.id || tx._id} className="hover:bg-blue-50 cursor-pointer" onClick={() => setSelectedTx(tx)}>
-                                        <td className="px-6 py-4 whitespace-nowrap">{new Date(tx.createdAt).toLocaleString()}</td>
-                                        <td className={`px-6 py-4 whitespace-nowrap capitalize font-semibold ${tx.amount > 0 ? 'text-green-600' : 'text-red-600'}`}>{tx.type || (tx.amount > 0 ? 'Credit' : 'Debit')}</td>
-                                        <td className={`px-6 py-4 whitespace-nowrap font-semibold ${tx.amount > 0 ? 'text-green-600' : 'text-red-600'}`}>₦ {Math.abs(tx.amount)}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <span className={`px-3 py-1 rounded-full text-xs font-semibold ${tx.status === 'success' ? 'bg-green-100 text-green-800' : tx.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-700'}`}>{tx.status?.charAt(0).toUpperCase() + tx.status?.slice(1)}</span>
-                                        </td>
+                    <>
+                        <div className="overflow-x-auto bg-white rounded-lg shadow-md">
+                            <table className="min-w-full divide-y divide-gray-200">
+                                <thead className="bg-gray-50">
+                                    <tr>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date/Time</th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                                </thead>
+                                <tbody className="bg-white divide-y divide-gray-200">
+                                    {transactions.map((tx: any) => (
+                                        <tr key={tx.id || tx._id} className="hover:bg-blue-50 cursor-pointer" onClick={() => setSelectedTx(tx)}>
+                                            <td className="px-6 py-4 whitespace-nowrap capitalize">{tx.type || (tx.amount > 0 ? 'Credit' : 'Debit')}</td>
+                                            <td className={`px-6 py-4 whitespace-nowrap font-semibold ${tx.amount > 0 ? 'text-green-600' : 'text-red-600'}`}>₦ {Math.abs(tx.amount)}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap">{tx.description}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap">{new Date(tx.createdAt).toLocaleString()}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${tx.status === 'success' ? 'bg-green-100 text-green-800' : tx.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-700'}`}>{tx.status?.charAt(0).toUpperCase() + tx.status?.slice(1)}</span>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                        {/* Pagination Controls */}
+                        <div className="flex justify-between items-center mt-4">
+                            <button
+                                className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+                                onClick={() => setPage(p => Math.max(1, p - 1))}
+                                disabled={page === 1}
+                            >
+                                Previous
+                            </button>
+                            <span className="text-sm">Page {page}{total > 0 ? ` of ${Math.ceil(total / limit)}` : ''}</span>
+                            <button
+                                className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+                                onClick={() => setPage(p => p + 1)}
+                                disabled={transactions.length < limit || (total > 0 && page >= Math.ceil(total / limit))}
+                            >
+                                Next
+                            </button>
+                        </div>
+                    </>
                 )}
             </div>
             {/* Transaction Details Modal */}

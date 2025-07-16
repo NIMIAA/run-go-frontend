@@ -2,6 +2,7 @@
 
 export interface User {
     id: string;
+    identifier: string; // unique user identifier for API calls
     firstName: string;
     lastName: string;
     email: string;

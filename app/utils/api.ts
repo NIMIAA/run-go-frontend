@@ -1,5 +1,6 @@
 import axios from "axios";
 import { setupAuthInterceptor } from "./auth";
+import { getUserData } from "@/app/utils/auth";
 
 const BASE_URL = "http://localhost:5000/v1";
 
@@ -154,10 +155,11 @@ export interface ProfileData {
     profileImagePath?: string;
 }
 
-export async function uploadProfileImage(file: File): Promise<ApiResponse<{ imageUrl: string }>> {
+export async function uploadProfileImage(file: File, userId: string): Promise<ApiResponse<{ imageUrl: string }>> {
     try {
         const formData = new FormData();
         formData.append('file', file);
+        formData.append('userId', userId);
 
         const res = await axios.post(`${BASE_URL}/user/profile/upload-image`, formData, {
             headers: {
@@ -172,13 +174,14 @@ export async function uploadProfileImage(file: File): Promise<ApiResponse<{ imag
     }
 }
 
-export async function getUserProfile(): Promise<ApiResponse<ProfileData>> {
+// Updated getUserProfile to use POST and send userId in the body
+export async function getUserProfile(userId: string): Promise<ApiResponse<ProfileData>> {
     try {
-        const res = await axios.get(`${BASE_URL}/user/profile`);
+        const res = await axios.post(`${BASE_URL}/user/profile`, { userId });
         return res.data;
     } catch (error: any) {
         throw new Error(
-            error.response?.data?.message || error.message || "Failed to fetch profile"
+            error.response?.data?.message || error.message || "Failed to fetch user profile"
         );
     }
 }
@@ -191,6 +194,22 @@ export async function deleteProfileImage(): Promise<ApiResponse<{ message: strin
         throw new Error(
             error.response?.data?.message || error.message || "Failed to delete image"
         );
+    }
+}
+
+// Fetches the user's profile image URL and returns the full URL with cache-busting
+export async function getProfileImageUrl(): Promise<string | null> {
+    try {
+        const userData = getUserData();
+        if (!userData?.identifier) return null;
+        const response = await getUserProfile(userData.identifier);
+        if (response.success && response.data?.profileImageUrl) {
+            return `http://localhost:5000${response.data.profileImageUrl}?t=${Date.now()}`;
+        }
+        return null;
+    } catch (error) {
+        console.error('Failed to fetch profile image URL:', error);
+        return null;
     }
 }
 

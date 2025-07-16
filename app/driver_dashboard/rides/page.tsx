@@ -13,19 +13,22 @@ import {
 import Link from "next/link";
 
 interface RideRequest {
-    id: string;
-    identifier?: string; // Added for backend compatibility
-    userName?: string;
+    identifier: string; // Booking identifier
+    userIdentifier?: string;
+    driverIdentifier?: string;
     pickupLocation: string;
     dropoffLocation?: string;
-    destination?: string; // Added for backend compatibility
-    estimatedAmount: number;
+    destination?: string;
+    estimatedAmount?: number;
+    amountPaid?: number; // <-- Add this line
     status: string;
     requestTime?: string;
     user?: {
         firstName?: string;
         lastName?: string;
     };
+    driverStartAcknowledged?: boolean;
+    userStartAcknowledged?: boolean;
     // Add any other fields as needed
 }
 
@@ -38,6 +41,8 @@ export default function DriverRidesPage() {
     const [loadingRides, setLoadingRides] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [actionLoading, setActionLoading] = useState<string | null>(null);
+    const [startLoading, setStartLoading] = useState<{ [id: string]: boolean }>({});
+    const [startError, setStartError] = useState<{ [id: string]: string | null }>({});
 
     useEffect(() => {
         const driverData = getDriverData();
@@ -58,6 +63,7 @@ export default function DriverRidesPage() {
         }
         const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
         try {
+            console.log('Fetching rides for driver:', driverData);
             const res = await fetch(
                 `${BASE_URL}/v1/booking/driver-requests/${driverData.identifier}?page=1&limit=10`,
                 {
@@ -75,9 +81,49 @@ export default function DriverRidesPage() {
         }
     };
 
+    // Fetch bookings function for active rides
+    const fetchBooking = async () => {
+        setLoadingRides(true);
+        setError(null);
+        const token = getDriverAuthToken();
+        const driverData = getDriverData();
+        if (!token || !driverData) {
+            setError("Driver not authenticated");
+            setLoadingRides(false);
+            return;
+        }
+        const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
+        try {
+            console.log('Fetching bookings for driver:', driverData);
+            const res = await fetch(
+                `${BASE_URL}/v1/booking/driver-bookings/${driverData.identifier}?page=1&limit=10`,
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
+            );
+            const data = await res.json();
+            // Use data.bookings for the bookings array
+            const allBookings: RideRequest[] = Array.isArray(data.bookings) ? data.bookings : [];
+            setActiveRides(allBookings.filter(r => r.status === 'accepted' || r.status === 'in-progress' || r.status === 'started'));
+        } catch (err) {
+            setError(err instanceof Error ? err.message : "Unknown error");
+        } finally {
+            setLoadingRides(false);
+        }
+    };
+
+    // useEffect(() => {
+    //     fetchRides();
+    // }, []);
+
+    // Trigger appropriate fetch function based on active tab
     useEffect(() => {
-        fetchRides();
-    }, []);
+        if (activeTab === 'active') {
+            fetchBooking();
+        } else if (activeTab === 'pending') {
+            fetchRides();
+        }
+    }, [activeTab]);
 
     const handleAcceptRide = (rideId: string) => {
         // Simulate API call
@@ -124,6 +170,39 @@ export default function DriverRidesPage() {
         } finally {
             setActionLoading(null);
         }
+    };
+
+    // Start Ride handler for driver (using booking identifier)
+    const handleStartRide = async (bookingIdentifier: string) => {
+        setStartLoading(prev => ({ ...prev, [bookingIdentifier]: true }));
+        setStartError(prev => ({ ...prev, [bookingIdentifier]: null }));
+        try {
+            const token = typeof window !== "undefined" ? localStorage.getItem("driverJwtToken") : null;
+            if (!token) throw new Error("Driver not authenticated");
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000'}/v1/booking/start-ride/${bookingIdentifier}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify({ role: 'driver' })
+            });
+            const data = await res.json();
+            console.log('Start Ride API response:', data);
+            if (!res.ok || data.success === false) {
+                throw new Error(data.message || `Failed to start ride: ${res.status}`);
+            }
+            // Defensive check for booking object
+            if (data.booking && data.booking.identifier) {
+                setActiveRides(prev => prev.map(b => b.identifier === data.booking.identifier ? { ...b, ...data.booking } : b));
+            } else {
+                // Fallback: refresh rides from backend
+                await fetchRides();
+            }
+        } catch (err: any) {
+            setStartError(prev => ({ ...prev, [bookingIdentifier]: err.message || 'Failed to start ride.' }));
+        }
+        setStartLoading(prev => ({ ...prev, [bookingIdentifier]: false }));
     };
 
     const formatTime = (date: Date) => {
@@ -212,20 +291,21 @@ export default function DriverRidesPage() {
             <div className="space-y-6">
                 {activeTab === 'active' ? (
                     activeRides.length > 0 ? (
-                        activeRides.map((ride) => (
-                            <div key={ride.id} className="bg-white rounded-lg shadow-md p-6">
+                        activeRides.map((booking) => (
+                            <div key={booking.identifier} className="bg-white rounded-lg shadow-md p-6">
                                 <div className="flex items-start justify-between mb-4">
                                     <div className="flex items-center gap-3">
                                         <UserIcon className="h-8 w-8 text-blue-600" />
                                         <div>
                                             <h3 className="text-lg font-semibold text-gray-900">
-                                                {ride.userName || (ride.user ? `${ride.user.firstName || ''} ${ride.user.lastName || ''}`.trim() : 'N/A')}
+                                                {/* Show userIdentifier or N/A (no user object in booking) */}
+                                                {booking.userIdentifier || 'N/A'}
                                             </h3>
                                         </div>
                                     </div>
                                     <div className="text-right">
                                         <p className="text-2xl font-bold text-green-600">
-                                            ₦{ride.estimatedAmount?.toLocaleString?.() ?? 'N/A'}
+                                            ₦{booking.amountPaid?.toLocaleString?.() ?? 'N/A'}
                                         </p>
                                     </div>
                                 </div>
@@ -234,22 +314,56 @@ export default function DriverRidesPage() {
                                         <MapPinIcon className="h-5 w-5 text-green-600 mt-1" />
                                         <div>
                                             <p className="text-sm font-medium text-gray-900">Pickup</p>
-                                            <p className="text-sm text-gray-600">{ride.pickupLocation}</p>
+                                            <p className="text-sm text-gray-600">{booking.pickupLocation}</p>
                                         </div>
                                     </div>
                                     <div className="flex items-start gap-3">
                                         <MapPinIcon className="h-5 w-5 text-red-600 mt-1" />
                                         <div>
-                                            <p className="text-sm font-medium text-gray-900">Dropoff</p>
-                                            <p className="text-sm text-gray-600">{ride.dropoffLocation}</p>
+                                            <p className="text-sm font-medium text-gray-900">Destination</p>
+                                            <p className="text-sm text-gray-600">{booking.destination}</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-4">
+                                <div className="flex items-center gap-4 mb-4">
                                     <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
-                                        {ride.status}
+                                        {booking.status}
+                                    </span>
+                                    {/* Show acknowledgement states */}
+                                    <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${booking.driverStartAcknowledged ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                                        Driver Ack: {booking.driverStartAcknowledged ? 'Yes' : 'No'}
+                                    </span>
+                                    <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${booking.userStartAcknowledged ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                                        User Ack: {booking.userStartAcknowledged ? 'Yes' : 'No'}
                                     </span>
                                 </div>
+                                <div className="flex gap-3">
+                                    {/* Show Start Ride button if status is 'accepted' and driverStartAcknowledged is false */}
+                                    {booking.status === 'accepted' && !booking.driverStartAcknowledged && (
+                                        <button
+                                            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                            disabled={!!startLoading[booking.identifier]}
+                                            onClick={() => handleStartRide(booking.identifier)}
+                                        >
+                                            {startLoading[booking.identifier] ? 'Starting...' : 'Start Ride'}
+                                        </button>
+                                    )}
+                                    {/* Show waiting message if driver acknowledged but user hasn't */}
+                                    {booking.status === 'accepted' && booking.driverStartAcknowledged && !booking.userStartAcknowledged && (
+                                        <span className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium">Waiting for user to start ride…</span>
+                                    )}
+                                    {/* Show Complete Ride button if status is 'started' */}
+                                    {booking.status === 'started' && (
+                                        <button
+                                            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+                                            onClick={() => alert('Complete Ride (API call placeholder)')}
+                                        >
+                                            Complete Ride
+                                        </button>
+                                    )}
+                                </div>
+                                {/* Error message for Start Ride */}
+                                {startError[booking.identifier] && <div className="text-red-500 text-sm mt-1">{startError[booking.identifier]}</div>}
                             </div>
                         ))
                     ) : (
@@ -261,7 +375,7 @@ export default function DriverRidesPage() {
                             console.log('Ride object:', ride); // Debug log
                             // Determine correct fields for ID, user name, and dropoff
                             const rideId = ride.identifier || '';
-                            const userName = ride.userName || (ride.user ? `${ride.user.firstName || ''} ${ride.user.lastName || ''}`.trim() : 'N/A');
+                            const userName = ride.user ? `${ride.user.firstName || ''} ${ride.user.lastName || ''}`.trim() : 'N/A';
                             const dropoff = ride.destination || 'N/A';
                             return (
                                 <div key={rideId} className="bg-white rounded-lg shadow-md p-6">

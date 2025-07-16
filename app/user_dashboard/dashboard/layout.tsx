@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from "react";
 import SideNav from '../../components/sideNav';
 import ProtectedRoute from '../../components/auth/ProtectedRoute';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
@@ -39,10 +39,10 @@ export default function DashboardViewLayout({
         <div className="flex flex-col lg:flex-row min-h-screen">
           {/* Sidebar */}
           <div className={`
-            fixed lg:static inset-y-0 left-0 z-40
-            w-64 lg:w-1/5 bg-white shadow-md transform transition-transform duration-300 ease-in-out
-            ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-          `}>
+              fixed lg:sticky lg:top-0 inset-y-0 left-0 z-40
+              w-64 lg:w-1/5 bg-white shadow-md transform transition-transform duration-300 ease-in-out
+              ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+            `}>
             <SideNav />
           </div>
 

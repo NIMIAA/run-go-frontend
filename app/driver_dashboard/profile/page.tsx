@@ -225,7 +225,7 @@ export default function DriverProfilePage() {
                                     <p className="text-sm text-gray-600">Average Rating</p>
                                 </div>
                                 <div className="text-center">
-                                    <p className="text-2xl font-bold text-green-600">$1,250</p>
+                                    <p className="text-2xl font-bold text-green-600">₦1,250</p>
                                     <p className="text-sm text-gray-600">Total Earnings</p>
                                 </div>
                             </div>

@@ -1,6 +1,7 @@
 "use client";
 import { useState, useRef } from "react";
 import { CameraIcon, XMarkIcon, ArrowUpTrayIcon } from "@heroicons/react/24/outline";
+import axios from 'axios';
 import { uploadProfileImage } from "@/app/utils/api";
 import Notification from "@/app/components/ui/Notification";
 import ProfileAvatar from "./ProfileAvatar";
@@ -56,7 +57,9 @@ export default function ProfileImageUpload({
 
     const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
-        if (!file) return;
+        if (!file) {
+            return;
+        }
 
         if (!validateFile(file)) {
             return;
@@ -76,35 +79,50 @@ export default function ProfileImageUpload({
             setError('Please select a file to upload');
             return;
         }
+        if (!userId) {
+            setError('User ID is missing. Please log in again.');
+            return;
+        }
 
         setIsUploading(true);
         setError(null);
 
         try {
-            const response = await uploadProfileImage(file);
-            if (response.success && response.data?.imageUrl) {
-                const fullImageUrl = `http://localhost:5000${response.data.imageUrl}`;
-                onImageUpload(fullImageUrl);
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('userId', userId);
+
+            const res = await axios.post(
+                'http://localhost:5000/v1/user/profile/upload-image',
+                formData,
+                { headers: { 'Content-Type': 'multipart/form-data' } }
+            );
+            // Extract imageUrl from response.data.data.imageUrl
+            const imageUrl = res.data?.data?.imageUrl;
+            if (imageUrl) {
+                const fullImageUrl = 'http://localhost:5000' + imageUrl;
+                const cacheBustedUrl = fullImageUrl + '?t=' + Date.now();
+                onImageUpload(cacheBustedUrl);
                 setPreviewUrl(null);
                 if (fileInputRef.current) {
                     fileInputRef.current.value = '';
                 }
                 setNotification({
                     type: 'success',
-                    message: 'Profile image uploaded successfully!',
+                    message: `Profile image uploaded! URL: ${cacheBustedUrl}`,
                     isVisible: true
                 });
             } else {
                 setNotification({
                     type: 'error',
-                    message: 'Upload failed. Please try again.',
+                    message: 'Upload failed: No imageUrl in response.',
                     isVisible: true
                 });
             }
-        } catch (error: any) {
+        } catch (err: any) {
             setNotification({
                 type: 'error',
-                message: error.message || 'Upload failed. Please try again.',
+                message: err.response?.data?.message || err.message || 'Upload failed. Please try again.',
                 isVisible: true
             });
         } finally {
@@ -146,12 +164,20 @@ export default function ProfileImageUpload({
         <div className="space-y-4">
             {/* Current Profile Image */}
             <div className="relative inline-block">
-                <ProfileAvatar
-                    user={user}
-                    profileImageUrl={currentImageUrl}
-                    size="xl"
-                />
-
+                {currentImageUrl ? (
+                    <img
+                        src={currentImageUrl}
+                        alt="Profile"
+                        style={{ width: 96, height: 96, borderRadius: '50%', objectFit: 'cover' }}
+                        crossOrigin="anonymous"
+                    />
+                ) : (
+                    <div
+                        className="w-24 h-24 bg-gradient-to-br from-[#191970] via-blue-500 to-yellow-400 rounded-full flex items-center justify-center text-white font-bold text-2xl shadow-lg"
+                    >
+                        {user ? `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase() : 'U'}
+                    </div>
+                )}
                 {/* Camera Icon */}
                 <label className="absolute bottom-0 right-0 bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow cursor-pointer">
                     <CameraIcon className="h-4 w-4 text-gray-600" />
@@ -163,7 +189,6 @@ export default function ProfileImageUpload({
                         className="hidden"
                     />
                 </label>
-
                 {/* Remove Button */}
                 {currentImageUrl && (
                     <button

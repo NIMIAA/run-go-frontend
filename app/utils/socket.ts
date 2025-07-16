@@ -7,4 +7,13 @@ export function createDriverSocket(token: string): Socket {
         autoConnect: false,
     });
     return socket;
+}
+
+export function createUserSocket(token: string): Socket {
+    const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL as string, {
+        auth: { token },
+        transports: ["websocket", "polling"],
+        autoConnect: false,
+    });
+    return socket;
 } 

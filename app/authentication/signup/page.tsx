@@ -573,8 +573,6 @@ export default function SignupPage() {
 
             {/* Additional Info */}
             <div className="mt-6 text-center text-xs text-gray-500 space-y-1">
-              <p>📧 Use a real email address you can access - verification code will be sent there</p>
-              <p>After verification, you'll be redirected to login to complete your account setup</p>
             </div>
           </div>
         </div>

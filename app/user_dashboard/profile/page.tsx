@@ -53,11 +53,13 @@ export default function ProfilePage() {
     const loadProfileData = async () => {
         setIsLoadingProfile(true);
         try {
-            const response = await getUserProfile();
+            const userData = getUserData();
+            if (!userData?.identifier) return;
+            const response = await getUserProfile(userData.identifier);
             if (response.success && response.data) {
                 setProfileData(response.data);
                 if (response.data.profileImageUrl) {
-                    setProfileImageUrl(`http://localhost:5000${response.data.profileImageUrl}`);
+                    setProfileImageUrl(`http://localhost:5000${response.data.profileImageUrl}?t=${Date.now()}`);
                 }
             }
         } catch (error) {
@@ -99,8 +101,6 @@ export default function ProfilePage() {
 
     const handleImageUpload = (imageUrl: string) => {
         setProfileImageUrl(imageUrl);
-        // Refresh profile data to get updated information
-        loadProfileData();
     };
 
     const handleImageRemove = async () => {
@@ -164,30 +164,12 @@ export default function ProfilePage() {
                     <div className="flex items-center gap-6">
                         {/* Profile Picture */}
                         <div className="relative">
-                            <ProfileAvatar
-                                user={user}
-                                profileImageUrl={profileImageUrl}
-                                size="xl"
+                            <img
+                                src={profileImageUrl || "/default-profile.png"}
+                                alt="Profile"
+                                style={{ width: 120, height: 120, borderRadius: '50%', objectFit: 'cover' }}
+                                crossOrigin="anonymous"
                             />
-                            <label className="absolute bottom-0 right-0 bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow cursor-pointer">
-                                <CameraIcon className="h-4 w-4 text-gray-600" />
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    className="hidden"
-                                />
-                            </label>
-                            {profileImageUrl && (
-                                <button
-                                    onClick={handleImageRemove}
-                                    className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 shadow-md hover:bg-red-600 transition-colors"
-                                    title="Remove photo"
-                                >
-                                    <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                                    </svg>
-                                </button>
-                            )}
                         </div>
 
                         {/* User Info */}
@@ -219,7 +201,7 @@ export default function ProfilePage() {
                         currentImageUrl={profileImageUrl || undefined}
                         onImageUpload={handleImageUpload}
                         onImageRemove={handleImageRemove}
-                        userId={user.id}
+                        userId={user.identifier}
                         user={user}
                     />
                 </div>
@@ -399,5 +381,31 @@ export default function ProfilePage() {
                 onClose={() => setNotification(prev => ({ ...prev, isVisible: false }))}
             />
         </div>
+    );
+}
+
+function ProfileImageDynamic() {
+    const [profileImageUrl, setProfileImageUrl] = useState<string>("");
+    useEffect(() => {
+        const fetchProfileImage = async () => {
+            try {
+                const userData = getUserData();
+                if (!userData?.identifier) return;
+                const response = await getUserProfile(userData.identifier);
+                if (response.success && response.data?.profileImageUrl) {
+                    setProfileImageUrl(`http://localhost:5000${response.data.profileImageUrl}?t=${Date.now()}`);
+                }
+            } catch (error) {
+                // Optionally handle error
+            }
+        };
+        fetchProfileImage();
+    }, []);
+    return (
+        <img
+            src={profileImageUrl || "/default-profile.png"}
+            alt="Profile"
+            style={{ width: 120, height: 120, borderRadius: '50%', objectFit: 'cover' }}
+        />
     );
 } 

@@ -3,16 +3,25 @@ import Link from "next/link";
 import { navRoutes } from "./navRoutes";
 import { logout } from "@/app/utils/auth";
 import { usePathname } from "next/navigation";
+import { useProfileImage } from "@/app/hooks/useProfileImage";
 
 export default function sideNav() {
     const pathname = usePathname();
+    const { profileImageUrl, isLoading } = useProfileImage();
+
     return (
         <div className="h-full flex flex-col">
             {/* Logo */}
-            <div className="p-4 lg:p-6 border-b border-gray-200">
-                <Link href="/user_dashboard/dashboard" className="flex items-center">
+            <div className="p-4 lg:p-6 border-b border-gray-200 flex flex-col items-center">
+                <Link href="/user_dashboard/dashboard" className="flex items-center mb-4">
                     <p className="text-2xl lg:text-3xl font-black text-gray-800">RUNGo</p>
                 </Link>
+                <img
+                    src={profileImageUrl || "/default-profile.png"}
+                    alt="Profile"
+                    style={{ width: 64, height: 64, borderRadius: '50%', objectFit: 'cover', marginBottom: 8 }}
+                    crossOrigin="anonymous"
+                />
             </div>
 
             {/* Navigation */}
