@@ -91,6 +91,9 @@ const UpcomingRidesTab: React.FC = () => {
     const [startLoading, setStartLoading] = useState<{ [id: string]: boolean }>({});
     const [startError, setStartError] = useState<{ [id: string]: string | null }>({});
     const [acknowledged, setAcknowledged] = useState<{ [id: string]: boolean }>({});
+    // Complete ride state
+    const [completeLoading, setCompleteLoading] = useState<{ [id: string]: boolean }>({});
+    const [completeError, setCompleteError] = useState<{ [id: string]: string | null }>({});
     // Cancel ride state
     const [cancelLoading, setCancelLoading] = useState<{ [id: string]: boolean }>({});
     const [cancelError, setCancelError] = useState<{ [id: string]: string | null }>({});
@@ -292,6 +295,42 @@ const UpcomingRidesTab: React.FC = () => {
                                         {startLoading[ride.identifier] ? 'Starting...' : 'Start Ride'}
                                     </button>
                                 )}
+                                {/* Complete Ride Button Logic */}
+                                {ride.status === 'started' && (
+                                    <button
+                                        className={`px-4 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800 transition-colors text-sm font-medium shadow disabled:opacity-50 disabled:cursor-not-allowed`}
+                                        disabled={!!completeLoading[ride.identifier]}
+                                        onClick={async () => {
+                                            setCompleteLoading(prev => ({ ...prev, [ride.identifier]: true }));
+                                            setCompleteError(prev => ({ ...prev, [ride.identifier]: null }));
+                                            try {
+                                                const token = typeof window !== "undefined" ? localStorage.getItem("jwtToken") : null;
+                                                if (!token) throw new Error("User not authenticated");
+                                                console.log('[DEBUG] PATCH /v1/booking/complete-ride/' + ride.identifier, { role: 'user' });
+                                                const res = await fetch(`${API_BASE_URL}/v1/booking/complete-ride/${ride.identifier}`, {
+                                                    method: 'PATCH',
+                                                    headers: {
+                                                        'Content-Type': 'application/json',
+                                                        'Authorization': `Bearer ${token}`,
+                                                    },
+                                                    body: JSON.stringify({ role: 'user' })
+                                                });
+                                                const data = await res.json();
+                                                console.log('[DEBUG] PATCH response:', data);
+                                                if (!res.ok) {
+                                                    throw new Error(data.message || `Failed to complete ride: ${res.status}`);
+                                                }
+                                                setSuccessMessage('Ride completed successfully.');
+                                                await fetchRides();
+                                            } catch (err: any) {
+                                                setCompleteError(prev => ({ ...prev, [ride.identifier]: err.message || 'Failed to complete ride.' }));
+                                            }
+                                            setCompleteLoading(prev => ({ ...prev, [ride.identifier]: false }));
+                                        }}
+                                    >
+                                        {completeLoading[ride.identifier] ? 'Completing...' : 'Complete Ride'}
+                                    </button>
+                                )}
                                 {/* Cancel Ride Button (backend) */}
                                 {(ride.status === 'accepted' || ride.status === 'started') && (
                                     <button
@@ -313,6 +352,8 @@ const UpcomingRidesTab: React.FC = () => {
                             </div>
                             {/* Error message for Start Ride */}
                             {startError[ride.identifier] && <div className="text-red-500 text-sm mt-1">{startError[ride.identifier]}</div>}
+                            {/* Error message for Complete Ride */}
+                            {completeError[ride.identifier] && <div className="text-red-500 text-sm mt-1">{completeError[ride.identifier]}</div>}
                             {/* Error message for Cancel Ride */}
                             {cancelError[ride.identifier] && <div className="text-red-500 text-sm mt-1">{cancelError[ride.identifier]}</div>}
                             {/* Debug Info */}

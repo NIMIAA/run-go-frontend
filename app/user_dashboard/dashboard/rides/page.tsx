@@ -607,7 +607,7 @@ export default function RidesPage() {
 
   const loadProfileData = async () => {
     try {
-      const response = await getUserProfile();
+      const response = await getUserProfile(user?.identifier || '');
       if (response.success && response.data?.profileImageUrl) {
         setProfileImageUrl(`http://localhost:5000${response.data.profileImageUrl}`);
       }

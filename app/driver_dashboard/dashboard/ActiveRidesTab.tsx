@@ -39,6 +39,9 @@ const ActiveRidesTab: React.FC = () => {
     const [actionLoading, setActionLoading] = useState<string | null>(null);
     const [startLoading, setStartLoading] = useState<{ [id: string]: boolean }>({});
     const [startError, setStartError] = useState<{ [id: string]: string | null }>({});
+    // Complete ride state
+    const [completeLoading, setCompleteLoading] = useState<{ [id: string]: boolean }>({});
+    const [completeError, setCompleteError] = useState<{ [id: string]: string | null }>({});
     const [activeTab, setActiveTab] = useState<'active' | 'pending'>('active');
 
     // Fetch bookings function (using new endpoint)
@@ -252,15 +255,43 @@ const ActiveRidesTab: React.FC = () => {
                                     {/* Show Complete Ride button if status is 'started' */}
                                     {booking.status === 'started' && (
                                         <button
-                                            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
-                                            onClick={() => alert('Complete Ride (API call placeholder)')}
+                                            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                            disabled={!!completeLoading[booking.identifier]}
+                                            onClick={async () => {
+                                                setCompleteLoading(prev => ({ ...prev, [booking.identifier]: true }));
+                                                setCompleteError(prev => ({ ...prev, [booking.identifier]: null }));
+                                                try {
+                                                    const token = typeof window !== "undefined" ? localStorage.getItem("driverJwtToken") : null;
+                                                    if (!token) throw new Error("Driver not authenticated");
+                                                    console.log('[DEBUG] PATCH /v1/booking/complete-ride/' + booking.identifier, { role: 'driver' });
+                                                    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000'}/v1/booking/complete-ride/${booking.identifier}`, {
+                                                        method: 'PATCH',
+                                                        headers: {
+                                                            'Content-Type': 'application/json',
+                                                            'Authorization': `Bearer ${token}`,
+                                                        },
+                                                        body: JSON.stringify({ role: 'driver' })
+                                                    });
+                                                    const data = await res.json();
+                                                    console.log('[DEBUG] PATCH response:', data);
+                                                    if (!res.ok) {
+                                                        throw new Error(data.message || `Failed to complete ride: ${res.status}`);
+                                                    }
+                                                    await fetchBookings();
+                                                } catch (err: any) {
+                                                    setCompleteError(prev => ({ ...prev, [booking.identifier]: err.message || 'Failed to complete ride.' }));
+                                                }
+                                                setCompleteLoading(prev => ({ ...prev, [booking.identifier]: false }));
+                                            }}
                                         >
-                                            Complete Ride
+                                            {completeLoading[booking.identifier] ? 'Completing...' : 'Complete Ride'}
                                         </button>
                                     )}
                                 </div>
                                 {/* Error message for Start Ride */}
                                 {startError[booking.identifier] && <div className="text-red-500 text-sm mt-1">{startError[booking.identifier]}</div>}
+                                {/* Error message for Complete Ride */}
+                                {completeError[booking.identifier] && <div className="text-red-500 text-sm mt-1">{completeError[booking.identifier]}</div>}
                             </div>
                         ))
                     ) : (
